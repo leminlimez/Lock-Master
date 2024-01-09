@@ -27,7 +27,7 @@ import UIKit
     @objc open func animateLock(_ animType: AnimationType = AnimationType.centerShrink, duration: Double = 0.5,
         completion: (() -> ())? = nil) {
             DispatchQueue.main.async {
-                self.layer.animateLock(animType: animType, completion: completion)
+                self.layer.animateLock(animType: animType, duration: duration, completion: completion)
             }
     }
 }
