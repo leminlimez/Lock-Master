@@ -82,12 +82,12 @@ extension CALayer {
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleHeight,
                     beginTime: 0, duration: duration * 0.45,
-                    keyPath: "transform.scale.y"
+                    keyPath: "transform.scale.y", easingType: .easeIn
                 ),
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleWidth,
                     beginTime: duration * 0.5, duration: duration * 0.4,
-                    keyPath: "transform.scale.x"
+                    keyPath: "transform.scale.x", easingType: .easeIn
                 )
             ]
             scaleAnims.duration = duration
@@ -137,7 +137,8 @@ extension CALayer {
         fromValue: CGFloat = 1.0, toValue: CGFloat = 0.0,
         beginTime: Double = 0.0, duration: Double = 0.5,
         fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards,
-        keyPath: String = "transform.scale"
+        keyPath: String = "transform.scale",
+        easingType: CAMediaTimingFunctionName? = nil
     ) -> CABasicAnimation {
         let scaleAnim = CABasicAnimation(keyPath: keyPath)
         scaleAnim.fromValue = fromValue
@@ -145,6 +146,9 @@ extension CALayer {
         scaleAnim.duration = duration
         scaleAnim.beginTime = beginTime
         scaleAnim.fillMode = fillMode
+        if easingType != nil {
+            scaleAnim.timingFunction = CAMediaTimingFunction(name: easingType!)
+        }
         return scaleAnim
     }
 
