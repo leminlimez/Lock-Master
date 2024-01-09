@@ -76,7 +76,7 @@
 			<key>min</key>
 			<real>0.05</real>
 			<key>max</key>
-			<real>3</key>
+			<real>3.0</real>
 			<key>default</key>
 			<real>0.5</real>
 			<key>defaults</key>
@@ -87,6 +87,8 @@
 			<string>animDuration</string>
 			<key>showValue</key>
 			<true/>
+			<key>isSegmented</key>
+			<false/>
 		</dict>
 	</array>
 	<key>title</key>
