@@ -91,6 +91,18 @@ extension CALayer {
                 ),
                 forKey: nil
             )
+
+            // Background Color Animation
+            // doesn't work yet
+            /*let bgAnim = CABasicAnimation(keyPath: "backgroundColor")
+            bgAnim.fromValue = UIColor.white.withAlphaComponent(0.0).cgColor
+            bgAnim.toValue = UIColor.white.withAlphaComponent(1.0).cgColor
+            bgAnim.duration = duration * 0.9
+            bgAnim.beginTime = duration * 0.1
+            bgAnim.fillMode = CAMediaTimingFillMode.backwards
+            bgAnim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+            snapshotLayer.backgroundColor = UIColor.white.withAlphaComponent(1.0).cgColor
+            snapshotLayer.add(bgAnim, forKey: nil)*/
         }
 
         // finish the animation
