@@ -42,7 +42,7 @@ extension CALayer {
         let alphaAnimation = CABasicAnimation(keyPath: "opacity")
         alphaAnimation.fromValue = 1.0
         alphaAnimation.toValue = 0.0
-        alphaAnimation.duration = duration
+        alphaAnimation.duration = duration + 0.05
         alphaAnimation.beginTime = 0
         alphaAnimation.fillMode = CAMediaTimingFillMode.backwards
         alphaAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
@@ -99,7 +99,7 @@ extension CALayer {
         }
 
         // finish the animation
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.05) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.1) {
             completion?()
         }
 
