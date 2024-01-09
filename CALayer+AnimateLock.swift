@@ -51,44 +51,44 @@ extension CALayer {
 
         // Determine which animation to play
         switch (animType) {
-            case .centerShrink:
-                // Shrink to Center
-                let targetScale: CGFloat = 0.0
-                snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
-                snapshotLayer.add(createScaleAnim(toValue: targetScale, duration: duration), forKey: nil)
-            case .slideLeft, .slideRight, .slideUp, .slideDown:
-                // Slide to a side
-                let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0))
-                let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0))
-                let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
-                snapshotLayer.add(
-                    createPosAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
-                    forKey: nil
-                )
-            case .tv:
-                // TV Off
-                // Height Animation
-                let targetScale: CGFloat = 0.01
-                snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
-                snapshotLayer.add(
-                    createScaleAnim(
-                        fromValue: 1.0, toValue: targetScale,
-                        beginTime: 0, duration: duration * 0.5,
-                        axisMode: "y"
-                    ),
-                    forKey: nil
-                )
+        case .centerShrink:
+            // Shrink to Center
+            let targetScale: CGFloat = 0.0
+            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
+            snapshotLayer.add(createScaleAnim(toValue: targetScale, duration: duration), forKey: nil)
+        case .slideLeft, .slideRight, .slideUp, .slideDown:
+            // Slide to a side
+            let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0))
+            let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0))
+            let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
+            snapshotLayer.add(
+                createPosAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
+                forKey: nil
+            )
+        case .tv:
+            // TV Off
+            // Height Animation
+            let targetScale: CGFloat = 0.01
+            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
+            snapshotLayer.add(
+                createScaleAnim(
+                    fromValue: 1.0, toValue: targetScale,
+                    beginTime: 0, duration: duration * 0.5,
+                    axisMode: "y"
+                ),
+                forKey: nil
+            )
 
-                // Width Animation
-                snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
-                snapshotLayer.add(
-                    createScaleAnim(
-                        fromValue: 1.0, toValue: targetScale,
-                        beginTime: duration * 0.5, duration: duration * 0.5,
-                        axisMode: "x"
-                    ),
-                    forKey: nil
-                )
+            // Width Animation
+            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
+            snapshotLayer.add(
+                createScaleAnim(
+                    fromValue: 1.0, toValue: targetScale,
+                    beginTime: duration * 0.5, duration: duration * 0.5,
+                    axisMode: "x"
+                ),
+                forKey: nil
+            )
         }
 
         // finish the animation
