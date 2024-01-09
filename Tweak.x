@@ -12,6 +12,7 @@ Original tweak found here: https://github.com/julioverne/LockAnim
 #pragma mark - Preference Variables
 BOOL enabled = YES;
 int animType = 0;
+double animDuration = 0.5;
 
 #pragma mark - Global Variables
 bool isAnimationInProgress = false;
@@ -22,6 +23,7 @@ void setPrefs() {
 	NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
 	enabled = [[preferences valueForKey:@"isEnabled"] boolValue];
 	animType = [[preferences valueForKey:@"animType"] integerValue];
+	animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -112,7 +114,7 @@ static LockMaster *__strong lockMaster;
 		if (localAnimType < 0 || localAnimType > 7)
 			localAnimType = 0;
 		
-		[subView animateLock:localAnimType duration:0.5 completion:^{
+		[subView animateLock:localAnimType duration:animDuration completion:^{
 			if (isAnimationInProgress && localAnimationCounter == animationCounter) {
 				// the purpose of animationCounter is to prevent this block from a stray cancelled animation reset a new ongoing animation
 				[self reset];

@@ -58,6 +58,24 @@
 			<key>PostNotification</key>
 			<string>com.leemin.lockmaster.prefschanged</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0.05</real>
+			<key>max</key>
+			<real>3</key>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>default</key>
+			<real>0.5</real>
+			<key>defaults</key>
+			<string>com.leemin.lockmasterprefs</string>
+			<key>key</key>
+			<string>animDuration</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>Lock Master Preferences</string>
