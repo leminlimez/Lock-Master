@@ -12,37 +12,36 @@
 			<string>Tweak Status</string>
 		</dict>
 		<dict>
+			<key>PostNotification</key>
+			<string>com.leemin.lockmaster.prefschanged</string>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.leemin.lockmasterprefs</string>
 			<key>key</key>
 			<string>isEnabled</string>
 			<key>label</key>
 			<string>Enabled</string>
-			<key>PostNotification</key>
-			<string>com.leemin.lockmaster.prefschanged</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.leemin.lockmasterprefs</string>
 		</dict>
-		<!-- Animation Preferences -->
+		<!-- === Animation Preferences === -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Animation Options</string>
 		</dict>
+		<!-- Animation Type -->
 		<dict>
+			<key>PostNotification</key>
+			<string>com.leemin.lockmaster.prefschanged</string>
 			<key>cell</key>
 			<string>PSLinkListCell</string>
-			<key>defaults</key>
-			<string>com.leemin.lockmasterprefs</string>
-			<key>key</key>
-			<string>animType</string>
 			<key>label</key>
 			<string>Animation Type</string>
-			<key>default</key>
-			<integer>0</integer>
+			<key>key</key>
+			<string>animType</string>
 			<key>detail</key>
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
@@ -63,18 +62,21 @@
 				<integer>4</integer>
 				<integer>5</integer>
 			</array>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.leemin.lockmasterprefs</string>
+		</dict>
+		<!-- Animation Duration -->
+		<dict>
 			<key>PostNotification</key>
 			<string>com.leemin.lockmaster.prefschanged</string>
-		</dict>
-		<dict>
 			<key>cell</key>
 			<string>PSSliderCell</string>
 			<key>min</key>
 			<real>0.05</real>
 			<key>max</key>
 			<real>3</key>
-			<key>showValue</key>
-			<true/>
 			<key>default</key>
 			<real>0.5</real>
 			<key>defaults</key>
@@ -83,8 +85,8 @@
 			<string>animDuration</string>
 			<key>key</key>
 			<string>animDuration</string>
-			<key>PostNotification</key>
-			<string>com.leemin.lockmaster.prefschanged</string>
+			<key>showValue</key>
+			<true/>
 		</dict>
 	</array>
 	<key>title</key>
