@@ -69,29 +69,29 @@ extension CALayer {
             )
         case .tv:
             // TV Off
+            let scaleAnims = CAAnimationGroup()
             // Width Animation
             let targetScaleWidth: CGFloat = 1/snapshotLayer.bounds.size.width
             snapshotLayer.setValue(targetScaleWidth, forKeyPath: "transform.scale.x")
-            snapshotLayer.add(
-                createFloatAnim(
-                    fromValue: 1.0, toValue: targetScaleWidth,
-                    beginTime: 0, duration: duration * 0.5,
-                    keyPath: "transform.scale.x"
-                ),
-                forKey: nil
-            )
             
             // Height Animation
             let targetScaleHeight: CGFloat = 1/snapshotLayer.bounds.size.height
             snapshotLayer.setValue(targetScaleHeight, forKeyPath: "transform.scale.y")
-            snapshotLayer.add(
+
+            scaleAnims.animations = [
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleHeight,
-                    beginTime: duration * 0.55, duration: duration * 0.4,
+                    beginTime: 0, duration: duration * 0.45,
                     keyPath: "transform.scale.y"
                 ),
-                forKey: nil
-            )
+                createFloatAnim(
+                    fromValue: 1.0, toValue: targetScaleWidth,
+                    beginTime: duration * 0.5, duration: duration * 0.4,
+                    keyPath: "transform.scale.x"
+                )
+            ]
+            scaleAnims.duration = duration
+            snapshotLayer.add(scaleAnims, forKey: nil)
 
             // Background Color Animation
             // doesn't work yet
