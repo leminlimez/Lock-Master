@@ -11,6 +11,9 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 #import <Foundation/Foundation.h>
 #import <LockMaster-Swift.h>
 
+#pragma mark - Global Constants
+#define ANIMATION_TYPE_COUNT 6
+
 #pragma mark - Preference Variables
 BOOL enabled = YES;
 BOOL disableInLPM = NO;
@@ -115,7 +118,7 @@ static LockMaster *__strong lockMaster;
 		[springboardWindow setHidden:NO];
 
 		NSInteger localAnimType = animType;
-		if (localAnimType < 0 || localAnimType > 7)
+		if (localAnimType < 0 || localAnimType > ANIMATION_TYPE_COUNT)
 			localAnimType = 0;
 		
 		[subView animateLock:localAnimType duration:totalTime completion:^{

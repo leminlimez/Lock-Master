@@ -62,7 +62,8 @@
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
 			<array>
-				<string>Shrink to Center</string>
+				<string>Shrink</string>
+				<string>Expand</string>
 				<string>Slide Left</string>
 				<string>Slide Right</string>
 				<string>Slide Up</string>
@@ -77,6 +78,7 @@
 				<integer>3</integer>
 				<integer>4</integer>
 				<integer>5</integer>
+				<integer>6</integer>
 			</array>
 			<key>default</key>
 			<integer>0</integer>
