@@ -25,7 +25,7 @@ import UIKit
 import QuartzCore
 
 extension CALayer {
-    open func animateLock(animType: AnimationType = AnimationType.centerShrink, duration: Double = 0.5,
+    open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5,
         completion: (() -> ())? = nil) {
         guard let snapshot = self.snapshot() else {
             return
@@ -53,9 +53,9 @@ extension CALayer {
 
         // Determine which animation to play
         switch (animType) {
-        case .centerShrink:
-            // Shrink to Center
-            let targetScale: CGFloat = 0.0
+        case .shrink, .expand:
+            // Shrink or Expand to Center
+            let targetScale: CGFloat = animType == .expand ? 5.0 : 0.0
             snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
             snapshotLayer.add(createScaleAnim(toValue: targetScale, duration: duration), forKey: nil)
         case .slideLeft, .slideRight, .slideUp, .slideDown:

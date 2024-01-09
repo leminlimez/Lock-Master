@@ -15,7 +15,8 @@ import Foundation
  The type of animation to play
  */
 @objc public enum AnimationType: Int {
-    case centerShrink
+    case shrink
+    case expand
     case slideLeft
     case slideRight
     case slideUp
