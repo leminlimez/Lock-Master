@@ -13,6 +13,7 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 
 #pragma mark - Preference Variables
 BOOL enabled = YES;
+BOOL disableInLPM = NO;
 int animType = 0;
 double animDuration = 0.5;
 
@@ -24,6 +25,7 @@ int animationCounter = 0;
 void setPrefs() {
 	NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
 	enabled = [[preferences valueForKey:@"isEnabled"] boolValue];
+	disableInLPM = [[preferences valueForKey:@"disableInLPM"] boolValue];
 	animType = [[preferences valueForKey:@"animType"] integerValue];
 	animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
 }
@@ -161,7 +163,13 @@ static LockMaster *__strong lockMaster;
 	// 3 = manual lock
 	// 8 = after timeout
 	// f = SpringBoard launch
-	if(enabled && (arg1 == 0 && [self screenIsOn]) && !isAnimationInProgress) {
+	if(
+		enabled
+		&& arg2 > 0
+		&& (!disableInLPM || (![[NSProcessInfo processInfo] isLowPowerModeEnabled]))
+		&& (arg1 == 0 && [self screenIsOn])
+		&& !isAnimationInProgress
+	) {
 		arg2 = animDuration + 0.1;
 		[lockMaster playLockAnimation:arg2 - 0.1];
 	}

@@ -4,13 +4,14 @@
 <dict>
 	<key>items</key>
 	<array>
-		<!-- Enable Tweak Toggle -->
+		<!-- === Enable Tweak Toggles === -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Tweak Status</string>
 		</dict>
+		<!-- Enable Tweak -->
 		<dict>
 			<key>PostNotification</key>
 			<string>com.leemin.lockmaster.prefschanged</string>
@@ -22,6 +23,21 @@
 			<string>Enabled</string>
 			<key>default</key>
 			<true/>
+			<key>defaults</key>
+			<string>com.leemin.lockmasterprefs</string>
+		</dict>
+		<!-- Disable in LPM -->
+		<dict>
+			<key>PostNotification</key>
+			<string>com.leemin.lockmaster.prefschanged</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>key</key>
+			<string>disableInLPM</string>
+			<key>label</key>
+			<string>Disable in Low Power Mode</string>
+			<key>default</key>
+			<false/>
 			<key>defaults</key>
 			<string>com.leemin.lockmasterprefs</string>
 		</dict>
