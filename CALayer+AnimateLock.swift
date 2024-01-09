@@ -69,24 +69,25 @@ extension CALayer {
             )
         case .tv:
             // TV Off
-            // Height Animation
-            let targetScale: CGFloat = 0.01
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
+            // Width Animation
+            let targetScaleWidth: CGFloat = 1/snapshotLayer.bounds.size.width
+            snapshotLayer.setValue(targetScaleWidth, forKeyPath: "transform.scale.x")
             snapshotLayer.add(
                 createFloatAnim(
-                    fromValue: 1.0, toValue: targetScale,
+                    fromValue: 1.0, toValue: targetScaleWidth,
                     beginTime: 0, duration: duration * 0.5,
                     keyPath: "transform.scale.x"
                 ),
                 forKey: nil
             )
-
-            // Width Animation
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
+            
+            // Height Animation
+            let targetScaleHeight: CGFloat = 1/snapshotLayer.bounds.size.height
+            snapshotLayer.setValue(targetScaleHeight, forKeyPath: "transform.scale.y")
             snapshotLayer.add(
                 createFloatAnim(
-                    fromValue: 1.0, toValue: targetScale,
-                    beginTime: duration * 0.5, duration: duration * 0.5,
+                    fromValue: 1.0, toValue: targetScaleHeight,
+                    beginTime: duration * 0.55, duration: duration * 0.4,
                     keyPath: "transform.scale.y"
                 ),
                 forKey: nil
