@@ -32,6 +32,7 @@ extension CALayer {
         }
         let initialSublayers = self.sublayers ?? []
         let snapshotLayer = CALayer()
+        let maskLayer = CAShapeLayer()
         snapshotLayer.frame = UIScreen.main.bounds
         snapshotLayer.contents = snapshot
         snapshotLayer.shouldRasterize = true
@@ -104,11 +105,44 @@ extension CALayer {
             bgAnim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
             snapshotLayer.backgroundColor = UIColor.white.withAlphaComponent(1.0).cgColor
             snapshotLayer.add(bgAnim, forKey: nil)*/
+        case .offBtnFade:
+            // Fade From Off Button
+            // Mask
+            maskLayer.frame = CGRect(origin: CGPoint(x: snapshotLayer.bounds.size.width * 0.4, y: -snapshotLayer.bounds.size.height * 0.18), size: snapshotLayer.bounds.size)
+            maskLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: snapshotLayer.bounds.size.height * 1.5, height: snapshotLayer.bounds.size.height * 1.5), cornerRadius: 200.0).cgPath
+            snapshotLayer.mask = maskLayer
+
+            maskLayer.setValue(0.0, forKeyPath: "transform.scale")
+
+            // Blur
+            let blurFilter = CIFilter(name: "CIGaussianBlur")
+            blurFilter?.name = "blur"
+            maskLayer.filters?.append(blurFilter)
+
+            maskLayer.add(
+                createFloatAnim(
+                    fromValue: 0.0, toValue: 10.0,
+                    beginTime: duration * 0.2, duration: duration * 0.8,
+                    keyPath: "filters.blur.inputRadius", easingType: .easeOut
+                ), forKey: nil
+            )
+
+            let maskAnims = CAAnimationGroup()
+            maskAnims.animations = [
+                createFloatAnim(
+                    fromValue: 1.0, toValue: 0.0,
+                    beginTime: duration * 0.1, duration: duration * 0.9,
+                    easingType: .easeOut
+                )
+            ]
+            maskAnims.duration = duration
+            maskLayer.add(maskAnims, forKey: nil)
         }
 
         // finish the animation
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.1) {
             snapshotLayer.removeFromSuperlayer()
+            maskLayer.removeFromSuperlayer()
             completion?()
         }
 

@@ -22,4 +22,5 @@ import Foundation
     case slideUp
     case slideDown
     case tv
+    case offBtnFade
 }

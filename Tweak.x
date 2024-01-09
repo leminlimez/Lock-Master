@@ -11,7 +11,7 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 #import <LockMaster-Swift.h>
 
 #pragma mark - Global Constants
-#define ANIMATION_TYPE_COUNT 6
+#define ANIMATION_TYPE_COUNT 7
 
 #pragma mark - Preference Variables
 BOOL enabled = YES;

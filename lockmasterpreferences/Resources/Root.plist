@@ -69,6 +69,7 @@
 				<string>Slide Up</string>
 				<string>Slide Down</string>
 				<string>CRT TV</string>
+				<string>Fade From Off Button</string>
 			</array>
 			<key>validValues</key>
 			<array>
@@ -79,6 +80,7 @@
 				<integer>4</integer>
 				<integer>5</integer>
 				<integer>6</integer>
+				<integer>7</integer>
 			</array>
 			<key>default</key>
 			<integer>0</integer>
