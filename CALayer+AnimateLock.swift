@@ -57,14 +57,14 @@ extension CALayer {
             // Shrink or Expand to Center
             let targetScale: CGFloat = animType == .expand ? 5.0 : 0.0
             snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
-            snapshotLayer.add(createScaleAnim(toValue: targetScale, duration: duration), forKey: nil)
+            snapshotLayer.add(createFloatAnim(toValue: targetScale, duration: duration), forKey: nil)
         case .slideLeft, .slideRight, .slideUp, .slideDown:
             // Slide to a side
             let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0.5))
             let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0.5))
             let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
             snapshotLayer.add(
-                createPosAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
+                createPointAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
                 forKey: nil
             )
         case .tv:
@@ -73,10 +73,10 @@ extension CALayer {
             let targetScale: CGFloat = 0.01
             snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
             snapshotLayer.add(
-                createScaleAnim(
+                createFloatAnim(
                     fromValue: 1.0, toValue: targetScale,
                     beginTime: 0, duration: duration * 0.5,
-                    axisMode: "x"
+                    keyPath: "transform.scale.x"
                 ),
                 forKey: nil
             )
@@ -84,10 +84,10 @@ extension CALayer {
             // Width Animation
             snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
             snapshotLayer.add(
-                createScaleAnim(
+                createFloatAnim(
                     fromValue: 1.0, toValue: targetScale,
                     beginTime: duration * 0.5, duration: duration * 0.5,
-                    axisMode: "y"
+                    keyPath: "transform.scale.y"
                 ),
                 forKey: nil
             )
@@ -132,13 +132,13 @@ extension CALayer {
         return image?.cgImage
     }
 
-    private func createScaleAnim(
+    private func createFloatAnim(
         fromValue: CGFloat = 1.0, toValue: CGFloat = 0.0,
         beginTime: Double = 0.0, duration: Double = 0.5,
         fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards,
-        axisMode: String = "" // "x", "y", or blank string for none
+        keyPath: String = "transform.scale"
     ) -> CABasicAnimation {
-        let scaleAnim = CABasicAnimation(keyPath: "transform.scale\(axisMode != "" ? ".\(axisMode)" : "")")
+        let scaleAnim = CABasicAnimation(keyPath: keyPath)
         scaleAnim.fromValue = fromValue
         scaleAnim.toValue = toValue
         scaleAnim.duration = duration
@@ -147,12 +147,13 @@ extension CALayer {
         return scaleAnim
     }
 
-    private func createPosAnim(
+    private func createPointAnim(
         fromValue: CGPoint = CGPoint(x: 0, y: 0), toValue: CGPoint = CGPoint(x: 100, y: 100),
         beginTime: Double = 0.0, duration: Double = 0.5,
-        fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards
+        fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards,
+        keyPath: String = "position"
     ) -> CABasicAnimation {
-        let posAnim = CABasicAnimation(keyPath: "position")
+        let posAnim = CABasicAnimation(keyPath: keyPath)
         posAnim.fromValue = fromValue
         posAnim.toValue = toValue
         posAnim.duration = duration
