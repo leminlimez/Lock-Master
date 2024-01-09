@@ -1,6 +1,8 @@
 /*
 This tweak is meant to be a more stable fork of the LockAnim tweak by julioverne.
 Original tweak found here: https://github.com/julioverne/LockAnim
+This tweak was also an adaptation of Disintegration Lock.
+Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock/tree/master
 */
 
 #import <rootless.h>
