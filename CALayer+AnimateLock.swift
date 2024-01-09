@@ -133,7 +133,7 @@ extension CALayer {
     }
 
     private func createPosAnim(
-        fromValue: CGPoint = [0, 0], toValue: [100, 100],
+        fromValue: CGPoint = CGPoint(x: 0, y: 0), toValue: CGPoint = CGPoint(x: 100, y: 100),
         beginTime: Double = 0.0, duration: Double = 0.5,
         fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards
     ) -> CABasicAnimation {
