@@ -16,5 +16,9 @@ import Foundation
  */
 @objc public enum AnimationType: Int {
     case centerShrink
+    case slideLeft
+    case slideRight
+    case slideUp
+    case slideDown
     case tv
 }

@@ -48,12 +48,20 @@
 			<key>validTitles</key>
 			<array>
 				<string>Shrink to Center</string>
+				<string>Slide Left</string>
+				<string>Slide Right</string>
+				<string>Slide Up</string>
+				<string>Slide Down</string>
 				<string>TV Off</string>
 			</array>
 			<key>validValues</key>
 			<array>
 				<integer>0</integer>
 				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+				<integer>4</integer>
+				<integer>5</integer>
 			</array>
 			<key>PostNotification</key>
 			<string>com.leemin.lockmaster.prefschanged</string>

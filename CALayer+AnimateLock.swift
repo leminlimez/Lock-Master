@@ -50,39 +50,52 @@ extension CALayer {
         snapshotLayer.add(alphaAnimation, forKey: nil)
 
         // Determine which animation to play
-        if (animType == AnimationType.centerShrink) {
-            // Shrink to Center
-            let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
-            let targetScale: CGFloat = 0.0
-            scaleAnim.fromValue = 1.0
-            scaleAnim.toValue = targetScale
-            scaleAnim.duration = duration
-            scaleAnim.beginTime = 0
-            scaleAnim.fillMode = CAMediaTimingFillMode.backwards
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
-            snapshotLayer.add(scaleAnim, forKey: nil)
-        } else if (animType == AnimationType.tv) {
-            // TV Off
-            // Height Animation
-            let scaleAnimY = CABasicAnimation(keyPath: "transform.scale.y")
-            let targetScale: CGFloat = 0.01
-            scaleAnimY.fromValue = 1.0
-            scaleAnimY.toValue = targetScale
-            scaleAnimY.duration = duration * 0.5
-            scaleAnimY.beginTime = 0
-            scaleAnimY.fillMode = CAMediaTimingFillMode.backwards
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
-            snapshotLayer.add(scaleAnimY, forKey: nil)
+        switch (animType) {
+            case .centerShrink:
+                // Shrink to Center
+                let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
+                let targetScale: CGFloat = 0.0
+                scaleAnim.fromValue = 1.0
+                scaleAnim.toValue = targetScale
+                scaleAnim.duration = duration
+                scaleAnim.beginTime = 0
+                scaleAnim.fillMode = CAMediaTimingFillMode.backwards
+                snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
+                snapshotLayer.add(scaleAnim, forKey: nil)
+            case .slideLeft, .slideRight, .slideUp, .slideDown:
+                // Slide to a side
+                let posAnim = CABasicAnimation(keyPath: "position")
+                let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0))
+                let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0))
+                let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
+                posAnim.fromValue = snapshotLayer.position
+                posAnim.toValue = targetPos
+                posAnim.duration = duration
+                posAnim.beginTime = 0
+                posAnim.fillMode = CAMediaTimingFillMode.backwards
+                snapshotLayer.add(posAnim, forKey: nil)
+            case .tv:
+                // TV Off
+                // Height Animation
+                let scaleAnimY = CABasicAnimation(keyPath: "transform.scale.y")
+                let targetScale: CGFloat = 0.01
+                scaleAnimY.fromValue = 1.0
+                scaleAnimY.toValue = targetScale
+                scaleAnimY.duration = duration * 0.5
+                scaleAnimY.beginTime = 0
+                scaleAnimY.fillMode = CAMediaTimingFillMode.backwards
+                snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
+                snapshotLayer.add(scaleAnimY, forKey: nil)
 
-            // Width Animation
-            let scaleAnimX = CABasicAnimation(keyPath: "transform.scale.x")
-            scaleAnimX.fromValue = 1.0
-            scaleAnimX.toValue = targetScale
-            scaleAnimX.duration = duration * 0.5
-            scaleAnimX.beginTime = duration * 0.5
-            scaleAnimX.fillMode = CAMediaTimingFillMode.backwards
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
-            snapshotLayer.add(scaleAnimX, forKey: nil)
+                // Width Animation
+                let scaleAnimX = CABasicAnimation(keyPath: "transform.scale.x")
+                scaleAnimX.fromValue = 1.0
+                scaleAnimX.toValue = targetScale
+                scaleAnimX.duration = duration * 0.5
+                scaleAnimX.beginTime = duration * 0.5
+                scaleAnimX.fillMode = CAMediaTimingFillMode.backwards
+                snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
+                snapshotLayer.add(scaleAnimX, forKey: nil)
         }
 
         // finish the animation
