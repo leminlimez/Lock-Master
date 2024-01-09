@@ -107,6 +107,7 @@ extension CALayer {
 
         // finish the animation
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.1) {
+            snapshotLayer.removeFromSuperlayer()
             completion?()
         }
 
