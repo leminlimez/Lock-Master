@@ -81,13 +81,13 @@ extension CALayer {
             scaleAnims.animations = [
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleHeight,
-                    beginTime: 0, duration: duration * 0.45,
+                    beginTime: 0, duration: duration * 0.4,
                     keyPath: "transform.scale.y", easingType: .easeIn
                 ),
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleWidth,
-                    beginTime: duration * 0.5, duration: duration * 0.4,
-                    keyPath: "transform.scale.x", easingType: .easeIn
+                    beginTime: duration * 0.45, duration: duration * 0.45,
+                    keyPath: "transform.scale.x", easingType: .easeOut
                 )
             ]
             scaleAnims.duration = duration
