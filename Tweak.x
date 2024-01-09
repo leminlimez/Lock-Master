@@ -114,7 +114,7 @@ static LockMaster *__strong lockMaster;
 		if (localAnimType < 0 || localAnimType > 7)
 			localAnimType = 0;
 		
-		[subView animateLock:localAnimType duration:animDuration completion:^{
+		[subView animateLock:localAnimType duration:totalTime completion:^{
 			if (isAnimationInProgress && localAnimationCounter == animationCounter) {
 				// the purpose of animationCounter is to prevent this block from a stray cancelled animation reset a new ongoing animation
 				[self reset];
@@ -160,7 +160,8 @@ static LockMaster *__strong lockMaster;
 	// 8 = after timeout
 	// f = SpringBoard launch
 	if(enabled && (arg1 == 0 && [self screenIsOn]) && !isAnimationInProgress) {
-		[lockMaster playLockAnimation:arg2];
+		arg2 = animDuration + 0.1;
+		[lockMaster playLockAnimation:arg2 - 0.1];
 	}
 	%orig(arg1, arg2, arg3, arg4, arg5);
 }
