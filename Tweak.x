@@ -23,7 +23,7 @@ void setPrefs() {
 	NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
 	enabled = [[preferences valueForKey:@"isEnabled"] boolValue];
 	animType = [[preferences valueForKey:@"animType"] integerValue];
-	animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
+	//animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
