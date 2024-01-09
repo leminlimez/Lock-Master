@@ -5,7 +5,6 @@ This tweak was also an adaptation of Disintegration Lock.
 Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock/tree/master
 */
 
-#import <rootless.h>
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
