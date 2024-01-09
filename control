@@ -1,0 +1,9 @@
+Package: com.leemin.lockmaster
+Name: Lock Master
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Customize the way your device locks
+Maintainer: lemin
+Author: lemin
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
