@@ -53,49 +53,42 @@ extension CALayer {
         switch (animType) {
             case .centerShrink:
                 // Shrink to Center
-                let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
                 let targetScale: CGFloat = 0.0
-                scaleAnim.fromValue = 1.0
-                scaleAnim.toValue = targetScale
-                scaleAnim.duration = duration
-                scaleAnim.beginTime = 0
-                scaleAnim.fillMode = CAMediaTimingFillMode.backwards
                 snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
-                snapshotLayer.add(scaleAnim, forKey: nil)
+                snapshotLayer.add(createScaleAnim(toValue: targetScale, duration: duration), forKey: nil)
             case .slideLeft, .slideRight, .slideUp, .slideDown:
                 // Slide to a side
-                let posAnim = CABasicAnimation(keyPath: "position")
                 let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0))
                 let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0))
                 let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
-                posAnim.fromValue = snapshotLayer.position
-                posAnim.toValue = targetPos
-                posAnim.duration = duration
-                posAnim.beginTime = 0
-                posAnim.fillMode = CAMediaTimingFillMode.backwards
-                snapshotLayer.add(posAnim, forKey: nil)
+                snapshotLayer.add(
+                    createPosAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
+                    forKey: nil
+                )
             case .tv:
                 // TV Off
                 // Height Animation
-                let scaleAnimY = CABasicAnimation(keyPath: "transform.scale.y")
                 let targetScale: CGFloat = 0.01
-                scaleAnimY.fromValue = 1.0
-                scaleAnimY.toValue = targetScale
-                scaleAnimY.duration = duration * 0.5
-                scaleAnimY.beginTime = 0
-                scaleAnimY.fillMode = CAMediaTimingFillMode.backwards
                 snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
-                snapshotLayer.add(scaleAnimY, forKey: nil)
+                snapshotLayer.add(
+                    createScaleAnim(
+                        fromValue: 1.0, toValue: targetScale,
+                        beginTime: 0, duration: duration * 0.5,
+                        axisMode: "y"
+                    ),
+                    forKey: nil
+                )
 
                 // Width Animation
-                let scaleAnimX = CABasicAnimation(keyPath: "transform.scale.x")
-                scaleAnimX.fromValue = 1.0
-                scaleAnimX.toValue = targetScale
-                scaleAnimX.duration = duration * 0.5
-                scaleAnimX.beginTime = duration * 0.5
-                scaleAnimX.fillMode = CAMediaTimingFillMode.backwards
                 snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
-                snapshotLayer.add(scaleAnimX, forKey: nil)
+                snapshotLayer.add(
+                    createScaleAnim(
+                        fromValue: 1.0, toValue: targetScale,
+                        beginTime: duration * 0.5, duration: duration * 0.5,
+                        axisMode: "x"
+                    ),
+                    forKey: nil
+                )
         }
 
         // finish the animation
@@ -122,5 +115,34 @@ extension CALayer {
         self.render(in: context)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         return image?.cgImage
+    }
+
+    private func createScaleAnim(
+        fromValue: CGFloat = 1.0, toValue: CGFloat = 0.0,
+        beginTime: Double = 0.0, duration: Double = 0.5,
+        fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards,
+        axisMode: String = "" // "x", "y", or blank string for none
+    ) -> CABasicAnimation {
+        let scaleAnim = CABasicAnimation(keyPath: "transform.scale\(axisMode != "" ? ".\(axisMode)" : "")")
+        scaleAnim.fromValue = fromValue
+        scaleAnim.toValue = toValue
+        scaleAnim.duration = duration
+        scaleAnim.beginTime = beginTime
+        scaleAnim.fillMode = fillMode
+        return scaleAnim
+    }
+
+    private func createPosAnim(
+        fromValue: CGPoint = [0, 0], toValue: [100, 100],
+        beginTime: Double = 0.0, duration: Double = 0.5,
+        fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards
+    ) -> CABasicAnimation {
+        let posAnim = CABasicAnimation(keyPath: "position")
+        posAnim.fromValue = fromValue
+        posAnim.toValue = toValue
+        posAnim.duration = duration
+        posAnim.beginTime = beginTime
+        posAnim.fillMode = fillMode
+        return posAnim
     }
 }
