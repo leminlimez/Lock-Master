@@ -23,7 +23,7 @@ void setPrefs() {
 	NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
 	enabled = [[preferences valueForKey:@"isEnabled"] boolValue];
 	animType = [[preferences valueForKey:@"animType"] integerValue];
-	//animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
+	animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -149,70 +149,6 @@ static LockMaster *__strong lockMaster;
 	imageView.transform = CGAffineTransformIdentity;
 	imageView.image = nil;
 }
-
-
-/*- (void)restoreFrames
-{
-	imageView.alpha = 1.0f;
-	backView.alpha = 1.0f;
-	backView.frame = springboardWindow.bounds;
-	imageView.frame = backView.bounds;
-	imageView.transform = CGAffineTransformIdentity;
-	backView.transform = CGAffineTransformIdentity;
-	imageView.image = nil;
-	springboardWindow.hidden = YES;
-}
-
-// Main Animation Function
-- (void)animWithDuration:(float)arg1 source:(int)source
-{
-	[self restoreFrames];
-	
-	CGRect newFrameImage = imageView.frame;
-	CGRect newFrameBack = backView.frame;
-	
-	CGAffineTransform newTransformImage = imageView.transform;
-	CGAffineTransform newTransformBack = backView.transform;
-
-	imageView.image = _UICreateScreenUIImage();
-	springboardWindow.hidden = NO;
-	
-	float speed = arg1/2;
-
-	// Determine the Animation Types
-	if (animType == 0) {
-		// TV Off
-		// first, shrink height to center (duration is half of speed)
-		newFrameImage = CGRectMake(imageView.frame.origin.x, -imageView.center.y, imageView.frame.size.width, imageView.frame.size.height);
-		newFrameBack = CGRectMake(0, imageView.center.y, imageView.frame.size.width, 0);
-
-		CGRect newFrameImage2 = imageView.frame;
-		CGRect newFrameBack2 = backView.frame;
-		CGAffineTransform newTransformImage2 = imageView.transform;
-		CGAffineTransform newTransformBack2 = backView.transform;
-		newFrameImage2 = CGRectMake(-imageView.frame.origin.x, -imageView.center.y, imageView.frame.size.width, imageView.frame.size.height);
-		newFrameBack2 = CGRectMake(imageView.center.x, imageView.center.y, 0, 0);
-		[UIView animateWithDuration:speed*0.5 animations:^{
-			imageView.frame = newFrameImage;
-			backView.frame = newFrameBack;
-			imageView.transform = newTransformImage;
-			backView.transform = newTransformBack;
-		} completion:^(BOOL finished) {
-			// second, shrink width to center
-			[UIView animateWithDuration:speed*0.5 animations:^{
-				imageView.frame = newFrameImage2;
-				backView.frame = newFrameBack2;
-				imageView.transform = newTransformImage2;
-				backView.transform = newTransformBack2;
-			} completion:^(BOOL finished) {
-				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, speed * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-					springboardWindow.hidden = YES;
-					[self restoreFrames];
-				});
-			}];
-		}];
-	}
-}*/
 @end
 
 #pragma mark - Hooks
