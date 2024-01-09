@@ -39,15 +39,17 @@ extension CALayer {
         self.addSublayer(snapshotLayer)
 
         // CG Animation Stuff
-        let alphaAnimation = CABasicAnimation(keyPath: "opacity")
-        alphaAnimation.fromValue = 1.0
-        alphaAnimation.toValue = 0.0
-        alphaAnimation.duration = duration + 0.05
-        alphaAnimation.beginTime = 0
-        alphaAnimation.fillMode = CAMediaTimingFillMode.backwards
-        alphaAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-        snapshotLayer.opacity = 0.0
-        snapshotLayer.add(alphaAnimation, forKey: nil)
+        if animType != .tv {
+            let alphaAnimation = CABasicAnimation(keyPath: "opacity")
+            alphaAnimation.fromValue = 1.0
+            alphaAnimation.toValue = 0.0
+            alphaAnimation.duration = duration + 0.05
+            alphaAnimation.beginTime = 0
+            alphaAnimation.fillMode = CAMediaTimingFillMode.backwards
+            alphaAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+            snapshotLayer.opacity = 0.0
+            snapshotLayer.add(alphaAnimation, forKey: nil)
+        }
 
         // Determine which animation to play
         switch (animType) {
@@ -69,23 +71,23 @@ extension CALayer {
             // TV Off
             // Height Animation
             let targetScale: CGFloat = 0.01
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
+            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
             snapshotLayer.add(
                 createScaleAnim(
                     fromValue: 1.0, toValue: targetScale,
                     beginTime: 0, duration: duration * 0.5,
-                    axisMode: "y"
+                    axisMode: "x"
                 ),
                 forKey: nil
             )
 
             // Width Animation
-            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.x")
+            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale.y")
             snapshotLayer.add(
                 createScaleAnim(
                     fromValue: 1.0, toValue: targetScale,
                     beginTime: duration * 0.5, duration: duration * 0.5,
-                    axisMode: "x"
+                    axisMode: "y"
                 ),
                 forKey: nil
             )
