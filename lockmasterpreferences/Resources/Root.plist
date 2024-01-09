@@ -96,7 +96,7 @@
 			<key>max</key>
 			<real>3.0</real>
 			<key>default</key>
-			<real>0.5</real>
+			<real>0.25</real>
 			<key>defaults</key>
 			<string>com.leemin.lockmasterprefs</string>
 			<key>id</key>
