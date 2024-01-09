@@ -201,5 +201,6 @@ static LockMaster *__strong lockMaster;
 #pragma mark - Updating Preferences
 %ctor {
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("com.leemin.lockmaster.prefschanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+	setPrefs();
 	%init;
 }
