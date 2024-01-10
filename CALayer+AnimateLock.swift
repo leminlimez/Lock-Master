@@ -105,7 +105,7 @@ extension CALayer {
             bgAnim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
             snapshotLayer.backgroundColor = UIColor.white.withAlphaComponent(1.0).cgColor
             snapshotLayer.add(bgAnim, forKey: nil)*/
-        case .offBtnFade:
+        case .offBtnFadeInto:
             // Fade From Off Button
             // Mask
             maskLayer.frame = CGRect(origin: CGPoint(x: snapshotLayer.bounds.size.width * 0.4, y: -snapshotLayer.bounds.size.height * 0.18), size: snapshotLayer.bounds.size)
@@ -137,6 +137,20 @@ extension CALayer {
             ]
             maskAnims.duration = duration
             maskLayer.add(maskAnims, forKey: nil)
+        case .offBtnFadeOut:
+            maskLayer.frame = CGRect(origin: CGPoint(x: snapshotLayer.bounds.size.width * 0.3, y: -snapshotLayer.bounds.size.height * 0.18), size: snapshotLayer.bounds.size)
+            maskLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: snapshotLayer.bounds.size.height * 1.5, height: snapshotLayer.bounds.size.height * 1.5), cornerRadius: 800.0).cgPath
+            maskLayer.backgroundColor = UIColor.black.cgColor
+            maskLayer.setValue(1.0, forKeyPath: "transform.scale")
+            snapshotLayer.addSublayer(maskLayer)
+
+            maskLayer.add(
+                createFloatAnim(
+                    fromValue: 0.0, toValue: 1.0,
+                    beginTime: 0, duration: duration * 0.5,
+                    easingType: .easeIn
+                ), forKey: nil
+            )
         }
 
         // finish the animation
