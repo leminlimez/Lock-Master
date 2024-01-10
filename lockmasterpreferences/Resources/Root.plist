@@ -112,6 +112,42 @@
 			<key>isSegmented</key>
 			<false/>
 		</dict>
+		<!-- === Sound Preferences === -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Sound Options</string>
+		</dict>
+		<!-- Lock Sound -->
+		<dict>
+			<key>PostNotification</key>
+			<string>com.leemin.lockmaster.prefschanged</string>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>label</key>
+			<string>Lock Sound</string>
+			<key>key</key>
+			<string>lockSound</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>validTitles</key>
+			<array>
+				<string>Default</string>
+				<string>Old</string>
+				<string>Windows XP</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.leemin.lockmasterprefs</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>Lock Master Preferences</string>
