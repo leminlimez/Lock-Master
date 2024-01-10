@@ -151,6 +151,34 @@ extension CALayer {
                     easingType: .easeIn
                 ), forKey: nil
             )
+        case .genie:
+            // Genie Suck Effect (into off button)
+            // 3D Transformation
+            snapshotLayer.transform = CATransform3DMakeRotation(CGFloat.pi / 2, 1, 0, 0)
+            snapshotLayer.add(
+                createFloatAnim(
+                    fromValue: 0.0, toValue: (.pi * 0.5),
+                    beginTime: 0.0, duration: duration * 0.5,
+                    keyPath: "transform.rotation.y", easingType: .easeOut
+                ), forKey: nil
+            )
+            /*let warpAnim = CABasicAnimation(keyPath: "rotation.y")
+            warpAnim.fromValue = 0.0
+            warpAnim.toValue = [60.0 * .pi / 180.0, 0.0, 1.0, 0.0]
+            warpAnim.duration = duration
+            warpAnim.beginTime = 0.0
+            warpAnim.fillMode = CAMediaTimingFillMode.backwards
+            warpAnim.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            // Animation Group
+            let animGroup = CAAnimationGroup()
+            animGroup.animations = [
+                createFloatAnim(
+                    fromValue: 1.0, toValue: 0.0,
+                    beginTime: duration * 0.1, duration: duration * 0.9,
+                    easingType: .easeOut
+                )
+            ]
+            snapshotLayer.add(warpAnim, forKey: nil)*/
         }
 
         // finish the animation
@@ -186,7 +214,7 @@ extension CALayer {
         beginTime: Double = 0.0, duration: Double = 0.5,
         fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards,
         keyPath: String = "transform.scale",
-        easingType: CAMediaTimingFunctionName? = nil
+        easingType: CAMediaTimingFunctionName = .linear
     ) -> CABasicAnimation {
         let scaleAnim = CABasicAnimation(keyPath: keyPath)
         scaleAnim.fromValue = fromValue
@@ -194,9 +222,7 @@ extension CALayer {
         scaleAnim.duration = duration
         scaleAnim.beginTime = beginTime
         scaleAnim.fillMode = fillMode
-        if easingType != nil {
-            scaleAnim.timingFunction = CAMediaTimingFunction(name: easingType!)
-        }
+        scaleAnim.timingFunction = CAMediaTimingFunction(name: easingType)
         return scaleAnim
     }
 

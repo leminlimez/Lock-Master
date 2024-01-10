@@ -71,6 +71,7 @@
 				<string>CRT TV</string>
 				<string>Fade Into Off Button</string>
 				<string>Fade Out of Off Button</string>
+				<string>Genie</string>
 			</array>
 			<key>validValues</key>
 			<array>
@@ -83,6 +84,7 @@
 				<integer>6</integer>
 				<integer>7</integer>
 				<integer>8</integer>
+				<integer>9</integer>
 			</array>
 			<key>default</key>
 			<integer>0</integer>
