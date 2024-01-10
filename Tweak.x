@@ -13,7 +13,7 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 #import <rootless.h>
 
 #pragma mark - Global Constants
-#define ANIMATION_TYPE_COUNT 8
+#define ANIMATION_TYPE_COUNT 9
 
 #pragma mark - Preference Variables
 BOOL enabled = YES;

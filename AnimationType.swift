@@ -24,4 +24,5 @@ import Foundation
     case tv
     case offBtnFadeInto
     case offBtnFadeOut
+    case genie
 }
