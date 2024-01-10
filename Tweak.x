@@ -218,30 +218,24 @@ static LockMaster *__strong lockMaster;
 %end
 
 #pragma mark - Sound Hooks
-@interface SBLockScreenManager : NSObject
--(BOOL)isUILocked;
-+(SBLockScreenManager *)sharedInstance;
-@end
 
 %hook SBSleepWakeHardwareButtonInteraction
 - (void)_playLockSound {
 	if (lockSound != 0) {
-		//if (![[%c(SBLockScreenManager) sharedInstance] isUILocked]) {
-			NSString *fileName;
-			if (lockSound == 1) {
-				fileName = [NSString stringWithFormat:@"Old_Lock"];
-			} else if (lockSound == 2) {
-				fileName = [NSString stringWithFormat: @"Windows_XP"];
-			} else {
-				%orig;
-				return;
-			}
-			NSURL *soundURL = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/LockSounds/%@.m4a", [LockMasterBundle() bundlePath], fileName]];
-			SystemSoundID sound = 0;
-            AudioServicesCreateSystemSoundID((CFURLRef) CFBridgingRetain(soundURL), &sound);
-            AudioServicesPlaySystemSound((SystemSoundID) sound);
+		NSString *fileName;
+		if (lockSound == 1) {
+			fileName = [NSString stringWithFormat:@"Old_Lock"];
+		} else if (lockSound == 2) {
+			fileName = [NSString stringWithFormat: @"Windows_XP"];
+		} else {
+			%orig;
 			return;
-		//}
+		}
+		NSURL *soundURL = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/LockSounds/%@.m4a", [LockMasterBundle() bundlePath], fileName]];
+		SystemSoundID sound = 0;
+		AudioServicesCreateSystemSoundID((CFURLRef) CFBridgingRetain(soundURL), &sound);
+		AudioServicesPlaySystemSound((SystemSoundID) sound);
+		return;
 	}
 	%orig;
 }
