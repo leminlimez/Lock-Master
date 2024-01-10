@@ -9,6 +9,8 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
 #import <LockMaster-Swift.h>
+#import <AudioToolbox/AudioServices.h>
+#import <rootless.h>
 
 #pragma mark - Global Constants
 #define ANIMATION_TYPE_COUNT 7
@@ -18,6 +20,8 @@ BOOL enabled = YES;
 BOOL disableInLPM = NO;
 int animType = 0;
 double animDuration = 0.5;
+// Lock Sound
+int lockSound = 0; // TODO: Make it better for custom sound uploading
 
 #pragma mark - Global Variables
 bool isAnimationInProgress = false;
@@ -30,10 +34,26 @@ void setPrefs() {
 	disableInLPM = [[preferences valueForKey:@"disableInLPM"] boolValue];
 	animType = [[preferences valueForKey:@"animType"] integerValue];
 	animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
+
+	lockSound = [[preferences valueForKey:@"lockSound"] integerValue];
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	setPrefs();
+}
+
+#pragma mark - Bundle Getter
+NSBundle *LockMasterBundle() {
+    static NSBundle *bundle = nil;
+    static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+        NSString *tweakBundlePath = [[NSBundle mainBundle] pathForResource:@"LockMasterPreferences" ofType:@"bundle"];
+        if (tweakBundlePath)
+            bundle = [NSBundle bundleWithPath:tweakBundlePath];
+        else
+            bundle = [NSBundle bundleWithPath:ROOT_PATH_NS(@"/Library/PreferenceBundles/LockMasterPreferences.bundle")];
+    });
+    return bundle;
 }
 
 #pragma mark - Necessary Classes
@@ -157,7 +177,7 @@ static LockMaster *__strong lockMaster;
 }
 @end
 
-#pragma mark - Hooks
+#pragma mark - Lock Animation Hooks
 %hook SBBacklightController
 -(void)_animateBacklightToFactor:(float)arg1 duration:(double)arg2 source:(long long)arg3 silently:(BOOL)arg4 completion:(id)arg5 
 {
@@ -194,6 +214,36 @@ static LockMaster *__strong lockMaster;
 {
 	%orig;
 	lockMaster = [[LockMaster alloc] init];
+}
+%end
+
+#pragma mark - Sound Hooks
+@interface SBLockScreenManager : NSObject
+-(BOOL)isUILocked;
++(SBLockScreenManager *)sharedInstance;
+@end
+
+%hook SBSleepWakeHardwareButtonInteraction
+- (void)_playLockSound {
+	if (lockSound != 0) {
+		//if (![[%c(SBLockScreenManager) sharedInstance] isUILocked]) {
+			NSString *fileName;
+			if (lockSound == 1) {
+				fileName = [NSString stringWithFormat:@"Old_Lock"];
+			} else if (lockSound == 2) {
+				fileName = [NSString stringWithFormat: @"Windows_XP"];
+			} else {
+				%orig;
+				return;
+			}
+			NSURL *soundURL = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/LockSounds/%@.m4a", [LockMasterBundle() bundlePath], fileName]];
+			SystemSoundID sound = 0;
+            AudioServicesCreateSystemSoundID((CFURLRef) CFBridgingRetain(soundURL), &sound);
+            AudioServicesPlaySystemSound((SystemSoundID) sound);
+			return;
+		//}
+	}
+	%orig;
 }
 %end
 
