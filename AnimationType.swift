@@ -22,5 +22,6 @@ import Foundation
     case slideUp
     case slideDown
     case tv
-    case offBtnFade
+    case offBtnFadeInto
+    case offBtnFadeOut
 }
