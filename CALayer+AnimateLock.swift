@@ -109,28 +109,35 @@ extension CALayer {
             // Fade Into Off Button
             // Mask
             maskLayer.frame = snapshotLayer.frame
-            let rectPath = makeRectanglePath(width: snapshotLayer.bounds.size.width, height: snapshotLayer.bounds.size.height)
-            maskLayer.path = rectPath.cgPath
+            let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
+            let offBtnPos = CGPoint(x: screenCenter.x + snapshotLayer.bounds.size.width * 0.55, y: screenCenter.y - snapshotLayer.bounds.size.height * 0.175)
+            let rectPath = makeRectanglePath(center: screenCenter, width: snapshotLayer.bounds.size.width, height: snapshotLayer.bounds.size.height).cgPath
+            let circlePath = makeCirclePath(center: screenCenter, radius: snapshotLayer.bounds.size.width).cgPath
+            maskLayer.path = circlePath
             snapshotLayer.mask = maskLayer
 
             maskLayer.setValue(0.0, forKeyPath: "transform.scale")
 
             // Path Animation
-            let offBtnPos = CGPoint(x: snapshotLayer.bounds.size.width * 0.5, y: -snapshotLayer.bounds.size.height * 0.35)
             let pathAnim = CABasicAnimation(keyPath: "path")
-            pathAnim.fromValue = rectPath.cgPath
-            pathAnim.toValue = makeCirclePath(center: offBtnPos, radius: snapshotLayer.bounds.size.width).cgPath
-            pathAnim.duration = duration * 0.6
+            pathAnim.fromValue = rectPath
+            pathAnim.toValue = circlePath
+            pathAnim.duration = duration
             pathAnim.beginTime = 0.0
 
             let maskAnims = CAAnimationGroup()
             maskAnims.animations = [
-                pathAnim
-                /*createFloatAnim(
+                pathAnim,
+                createFloatAnim(
                     fromValue: 1.0, toValue: 0.0,
                     beginTime: duration * 0.1, duration: duration * 0.9,
                     easingType: .easeOut
-                )*/
+                ),
+                createPointAnim(
+                    fromValue: screenCenter, toValue: offBtnPos,
+                    beginTime: duration * 0.1, duration: duration * 0.9,
+                    easingType: .easeOut
+                )
             ]
             maskAnims.duration = duration
             maskLayer.add(maskAnims, forKey: nil)
@@ -228,7 +235,8 @@ extension CALayer {
         fromValue: CGPoint = CGPoint(x: 0, y: 0), toValue: CGPoint = CGPoint(x: 100, y: 100),
         beginTime: Double = 0.0, duration: Double = 0.5,
         fillMode: CAMediaTimingFillMode = CAMediaTimingFillMode.backwards,
-        keyPath: String = "position"
+        keyPath: String = "position",
+        easingType: CAMediaTimingFunctionName = .linear
     ) -> CABasicAnimation {
         let posAnim = CABasicAnimation(keyPath: keyPath)
         posAnim.fromValue = fromValue
@@ -236,6 +244,7 @@ extension CALayer {
         posAnim.duration = duration
         posAnim.beginTime = beginTime
         posAnim.fillMode = fillMode
+        posAnim.timingFunction = CAMediaTimingFunction(name: easingType)
         return posAnim
     }
 
