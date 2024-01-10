@@ -72,11 +72,11 @@ extension CALayer {
             // TV Off
             let scaleAnims = CAAnimationGroup()
             // Width Animation
-            let targetScaleWidth: CGFloat = 1/snapshotLayer.bounds.size.width
+            let targetScaleWidth: CGFloat = 3/snapshotLayer.bounds.size.width
             snapshotLayer.setValue(targetScaleWidth, forKeyPath: "transform.scale.x")
             
             // Height Animation
-            let targetScaleHeight: CGFloat = 1/snapshotLayer.bounds.size.height
+            let targetScaleHeight: CGFloat = 3/snapshotLayer.bounds.size.height
             snapshotLayer.setValue(targetScaleHeight, forKeyPath: "transform.scale.y")
 
             scaleAnims.animations = [
