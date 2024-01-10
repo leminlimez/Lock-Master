@@ -128,12 +128,14 @@ extension CALayer {
             if animType == .offBtnFadeInto {
                 pathAnim.fromValue = rectPath
                 pathAnim.toValue = circlePath
+                pathAnim.duration = duration
+                pathAnim.beginTime = 0.0
             } else {
                 pathAnim.fromValue = circlePath
                 pathAnim.toValue = rectPath
+                pathAnim.duration = duration * 0.9
+                pathAnim.beginTime = 0.1
             }
-            pathAnim.duration = duration
-            pathAnim.beginTime = 0.0
 
             let maskAnims = CAAnimationGroup()
             maskAnims.animations = [
@@ -141,13 +143,13 @@ extension CALayer {
                 createFloatAnim(
                     fromValue: animType == .offBtnFadeInto ? 1.0 : 0.0,
                     toValue: animType == .offBtnFadeInto ? 0.0 : 1.0,
-                    beginTime: duration * 0.1, duration: duration * 0.9,
+                    beginTime: 0.0, duration: duration,
                     easingType: .easeOut
                 ),
                 createPointAnim(
                     fromValue: animType == .offBtnFadeInto ? screenCenter : offBtnPos,
                     toValue: animType == .offBtnFadeInto ? offBtnPos : screenCenter,
-                    beginTime: duration * 0.1, duration: duration * 0.9,
+                    beginTime: 0.0, duration: duration,
                     easingType: .easeOut
                 )
             ]
