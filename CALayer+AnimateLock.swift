@@ -105,23 +105,33 @@ extension CALayer {
             bgAnim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
             snapshotLayer.backgroundColor = UIColor.white.withAlphaComponent(1.0).cgColor
             snapshotLayer.add(bgAnim, forKey: nil)*/
-        case .offBtnFadeInto:
-            // Fade Into Off Button
+        case .offBtnFadeInto, .offBtnFadeOut:
+            // Fade Into or From Off Button
             // Mask
             maskLayer.frame = snapshotLayer.frame
             let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
             let offBtnPos = CGPoint(x: screenCenter.x + snapshotLayer.bounds.size.width * 0.55, y: screenCenter.y - snapshotLayer.bounds.size.height * 0.175)
             let rectPath = makeRectanglePath(center: screenCenter, width: snapshotLayer.bounds.size.width, height: snapshotLayer.bounds.size.height).cgPath
             let circlePath = makeCirclePath(center: screenCenter, radius: snapshotLayer.bounds.size.width).cgPath
-            maskLayer.path = circlePath
-            snapshotLayer.mask = maskLayer
+            maskLayer.path = animType == .offBtnFadeInto ? circlePath : rectPath
+            if animType == .offBtnFadeInto {
+                snapshotLayer.mask = maskLayer
+            } else {
+                maskLayer.backgroundColor = UIColor.black.cgColor
+                snapshotLayer.addSublayer(maskLayer)
+            }
 
-            maskLayer.setValue(0.0, forKeyPath: "transform.scale")
+            maskLayer.setValue(animType == .offBtnFadeInto ? 0.0 : 1.0, forKeyPath: "transform.scale")
 
             // Path Animation
             let pathAnim = CABasicAnimation(keyPath: "path")
-            pathAnim.fromValue = rectPath
-            pathAnim.toValue = circlePath
+            if animType == .offBtnFadeInto {
+                pathAnim.fromValue = rectPath
+                pathAnim.toValue = circlePath
+            } else {
+                pathAnim.fromValue = circlePath
+                pathAnim.toValue = rectPath
+            }
             pathAnim.duration = duration
             pathAnim.beginTime = 0.0
 
@@ -129,33 +139,20 @@ extension CALayer {
             maskAnims.animations = [
                 pathAnim,
                 createFloatAnim(
-                    fromValue: 1.0, toValue: 0.0,
+                    fromValue: animType == .offBtnFadeInto ? 1.0 : 0.0,
+                    toValue: animType == .offBtnFadeInto ? 0.0 : 1.0,
                     beginTime: duration * 0.1, duration: duration * 0.9,
                     easingType: .easeOut
                 ),
                 createPointAnim(
-                    fromValue: screenCenter, toValue: offBtnPos,
+                    fromValue: animType == .offBtnFadeInto ? screenCenter : offBtnPos,
+                    toValue: animType == .offBtnFadeInto ? offBtnPos : screenCenter,
                     beginTime: duration * 0.1, duration: duration * 0.9,
                     easingType: .easeOut
                 )
             ]
             maskAnims.duration = duration
             maskLayer.add(maskAnims, forKey: nil)
-        case .offBtnFadeOut:
-            // Fade From Off Button
-            maskLayer.frame = CGRect(origin: CGPoint(x: snapshotLayer.bounds.size.width * 0.3, y: -snapshotLayer.bounds.size.height * 0.18), size: snapshotLayer.bounds.size)
-            maskLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: snapshotLayer.bounds.size.height * 1.5, height: snapshotLayer.bounds.size.height * 1.5), cornerRadius: 800.0).cgPath
-            maskLayer.backgroundColor = UIColor.black.cgColor
-            maskLayer.setValue(1.0, forKeyPath: "transform.scale")
-            snapshotLayer.addSublayer(maskLayer)
-
-            maskLayer.add(
-                createFloatAnim(
-                    fromValue: 0.0, toValue: 1.0,
-                    beginTime: 0, duration: duration * 0.5,
-                    easingType: .easeIn
-                ), forKey: nil
-            )
         case .genie:
             // Genie Suck Effect (into off button)
             // 3D Transformation
