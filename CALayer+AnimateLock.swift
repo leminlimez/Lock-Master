@@ -106,38 +106,36 @@ extension CALayer {
             snapshotLayer.backgroundColor = UIColor.white.withAlphaComponent(1.0).cgColor
             snapshotLayer.add(bgAnim, forKey: nil)*/
         case .offBtnFadeInto:
-            // Fade From Off Button
+            // Fade Into Off Button
             // Mask
-            maskLayer.frame = CGRect(origin: CGPoint(x: snapshotLayer.bounds.size.width * 0.4, y: -snapshotLayer.bounds.size.height * 0.18), size: snapshotLayer.bounds.size)
-            maskLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: snapshotLayer.bounds.size.height * 1.5, height: snapshotLayer.bounds.size.height * 1.5), cornerRadius: 200.0).cgPath
+            maskLayer.frame = snapshotLayer.frame
+            let rectPath = makeRectanglePath(width: snapshotLayer.bounds.size.width, height: snapshotLayer.bounds.size.height)
+            maskLayer.path = rectPath.cgPath
             snapshotLayer.mask = maskLayer
 
             maskLayer.setValue(0.0, forKeyPath: "transform.scale")
 
-            // Blur
-            let blurFilter = CIFilter(name: "CIGaussianBlur")
-            blurFilter?.name = "blur"
-            maskLayer.filters?.append(blurFilter)
-
-            maskLayer.add(
-                createFloatAnim(
-                    fromValue: 0.0, toValue: 10.0,
-                    beginTime: duration * 0.2, duration: duration * 0.8,
-                    keyPath: "filters.blur.inputRadius", easingType: .easeOut
-                ), forKey: nil
-            )
+            // Path Animation
+            let offBtnPos = CGPoint(x: snapshotLayer.bounds.size.width * 0.5, y: -snapshotLayer.bounds.size.height * 0.35)
+            let pathAnim = CABasicAnimation(keyPath: "path")
+            pathAnim.fromValue = rectPath.cgPath
+            pathAnim.toValue = makeCirclePath(center: offBtnPos, radius: snapshotLayer.bounds.size.width).cgPath
+            pathAnim.duration = duration * 0.6
+            pathAnim.beginTime = 0.0
 
             let maskAnims = CAAnimationGroup()
             maskAnims.animations = [
-                createFloatAnim(
+                pathAnim
+                /*createFloatAnim(
                     fromValue: 1.0, toValue: 0.0,
                     beginTime: duration * 0.1, duration: duration * 0.9,
                     easingType: .easeOut
-                )
+                )*/
             ]
             maskAnims.duration = duration
             maskLayer.add(maskAnims, forKey: nil)
         case .offBtnFadeOut:
+            // Fade From Off Button
             maskLayer.frame = CGRect(origin: CGPoint(x: snapshotLayer.bounds.size.width * 0.3, y: -snapshotLayer.bounds.size.height * 0.18), size: snapshotLayer.bounds.size)
             maskLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: snapshotLayer.bounds.size.height * 1.5, height: snapshotLayer.bounds.size.height * 1.5), cornerRadius: 800.0).cgPath
             maskLayer.backgroundColor = UIColor.black.cgColor
@@ -239,5 +237,34 @@ extension CALayer {
         posAnim.beginTime = beginTime
         posAnim.fillMode = fillMode
         return posAnim
+    }
+
+    private func makeCirclePath(center: CGPoint = CGPoint(x: 0.0, y: 0.0), radius: CGFloat) -> UIBezierPath {
+        let circlePath = UIBezierPath()
+        circlePath.addArc(withCenter: center, radius: radius, startAngle: -CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+        circlePath.addArc(withCenter: center, radius: radius, startAngle: -CGFloat.pi/2, endAngle: 0, clockwise: true)
+        circlePath.addArc(withCenter: center, radius: radius, startAngle: 0, endAngle: CGFloat.pi/2, clockwise: true)
+        circlePath.addArc(withCenter: center, radius: radius, startAngle: CGFloat.pi/2, endAngle: CGFloat.pi, clockwise: true)
+        circlePath.addArc(withCenter: center, radius: radius, startAngle: CGFloat.pi, endAngle: -CGFloat.pi, clockwise: true)
+        circlePath.close()
+        return circlePath
+    }
+
+    private func makeRectanglePath(center: CGPoint = CGPoint(x: 0.0, y: 0.0), width: CGFloat, height: CGFloat) -> UIBezierPath {
+        let x: CGFloat = center.x - (width / 2.0)
+        let y: CGFloat = center.y - (height / 2.0)
+        
+        let rectPath = UIBezierPath()
+        rectPath.move(to: CGPoint(x: x, y: y))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.addLine(to: CGPoint(x: x + width, y: y))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.addLine(to: CGPoint(x: x + width, y: y + height))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.addLine(to: CGPoint(x: x, y: y + height))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.close()
+        
+        return rectPath
     }
 }
