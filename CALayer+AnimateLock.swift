@@ -27,6 +27,112 @@ import QuartzCore
 extension CALayer {
     open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5,
         completion: (() -> ())? = nil) {
+            var lockAnim: LockMasterAnimation
+            switch(animType) {
+            case .shrink:
+                lockAnim = LockMasterAnimation.init(
+                    animations: [
+                        AnimationSegment.init(
+                            keyPath: "transform.scale",
+                            fromValue: 1.0, toValue: 0.0
+                        )
+                    ]
+                )
+            default:
+                lockAnim = LockMasterAnimation.init(animations: [])
+            }
+
+            DispatchQueue.main.async {
+                self.animateLock(anim: lockAnim, duration: duration, completion: completion)
+            }
+    }
+
+    private func animateLock(anim: LockMasterAnimation, duration: Double = 0.5,
+        completion: (() -> ())? = nil) {
+        let initialSublayers = self.sublayers ?? []
+        var additionalSublayers: [CALayer] = []
+
+        // create the snapshot
+        let snapshotLayer = CALayer()
+        snapshotLayer.frame = UIScreen.main.bounds
+        snapshotLayer.contents = snapshot
+        snapshotLayer.shouldRasterize = true
+        snapshotLayer.drawsAsynchronously = true
+        self.addSublayer(snapshotLayer)
+
+        // create the animation group
+        let animGroup = CAAnimationGroup()
+        var anims: [CAAnimation] = []
+
+        // create the fade
+        if anim.hasFade {
+            let totalDuration: Double = (duration * anim.fadeDuration) + anim.fadeAdditionalDuration
+            let alphaAnimation = CABasicAnimation(keyPath: "opacity")
+            alphaAnimation.fromValue = 1.0
+            alphaAnimation.toValue = 0.0
+            alphaAnimation.duration = totalDuration
+            alphaAnimation.beginTime = duration * anim.fadeBeginTime
+            alphaAnimation.fillMode = CAMediaTimingFillMode.backwards
+            alphaAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+            snapshotLayer.opacity = 0.0
+            anims.append(alphaAnimation)
+            animGroup.duration = max(totalDuration + (duration * anim.fadeBeginTime), duration)
+        } else {
+            animGroup.duration = duration
+        }
+
+        // add all of the animations
+        anim.animations.forEach { (animSeg) in
+            let newAnim = CABasicAnimation(keyPath: animSeg.keyPath)
+            newAnim.fromValue = animSeg.fromValue
+            newAnim.toValue = animSeg.toValue
+            newAnim.beginTime = duration * animSeg.beginTime
+            newAnim.duration = duration * animSeg.duration
+            newAnim.fillMode = animSeg.fillMode
+            newAnim.timingFunction = CAMediaTimingFunction(name: animSeg.easingType)
+            if animSeg.isMask || animSeg.maskPath != nil {
+                let maskLayer = CAShapeLayer()
+                maskLayer.frame = snapshotLayer.frame
+                if animSeg.maskPath != nil {
+                    maskLayer.path = animSeg.maskPath!
+                }
+                if animSeg.isMask {
+                    snapshotLayer.mask = maskLayer
+                } else {
+                    maskLayer.backgroundColor = UIColor.black.cgColor
+                    snapshotLayer.addSublayer(maskLayer)
+                }
+                additionalSublayers.append(maskLayer)
+                maskLayer.setValue(animSeg.toValue, forKeyPath: animSeg.keyPath)
+                maskLayer.add(newAnim, forKey: nil)
+            } else {
+                snapshotLayer.setValue(animSeg.toValue, forKeyPath: animSeg.keyPath)
+                anims.append(newAnim)
+            }
+        }
+        if anims.count > 0 {
+            animGroup.animations = anims
+            snapshotLayer.add(animGroup, forKey: nil)
+        }
+
+        // finish the animation
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.1) {
+            additionalSublayers.forEach {$0.removeFromSuperlayer()}
+            snapshotLayer.removeFromSuperlayer()
+            completion?()
+        }
+
+        initialSublayers.forEach { (layer) in
+            layer.opacity = 0.0
+        }
+
+        self.contents = nil
+        self.backgroundColor = UIColor.clear.cgColor
+        self.masksToBounds = false
+    }
+
+    /*open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5,
+        completion: (() -> ())? = nil) {
         guard let snapshot = self.snapshot() else {
             return
         }
@@ -199,7 +305,7 @@ extension CALayer {
         self.contents = nil
         self.backgroundColor = UIColor.clear.cgColor
         self.masksToBounds = false
-    }
+    }*/
 
     private func snapshot() -> CGImage? {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0.0)
