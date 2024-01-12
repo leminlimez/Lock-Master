@@ -40,7 +40,7 @@ extension CALayer {
         self.addSublayer(snapshotLayer)
 
         // CG Animation Stuff
-        if animType != .tv {
+        if animType != .tv && animType != .offBtnFadeInto && animType != .offBtnFadeOut {
             let alphaAnimation = CABasicAnimation(keyPath: "opacity")
             alphaAnimation.fromValue = 1.0
             alphaAnimation.toValue = 0.0
