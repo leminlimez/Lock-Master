@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = LockMaster
 
-LockMaster_FILES = Tweak.x UIView+AnimateLock.swift AnimationType.swift CALayer+AnimateLock.swift
+LockMaster_FILES = Tweak.x LockMaster.x
 LockMaster_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk

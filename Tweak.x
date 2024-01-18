@@ -8,7 +8,6 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
-#import <LockMaster-Swift.h>
 #import <AudioToolbox/AudioServices.h>
 #import <rootless.h>
 
