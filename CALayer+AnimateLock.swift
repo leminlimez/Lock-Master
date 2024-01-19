@@ -143,14 +143,17 @@ extension CALayer {
             if animType == .offBtnFadeInto {
                 pathAnim.fromValue = rectPath
                 pathAnim.toValue = circlePath
-                pathAnim.duration = duration
+                pathAnim.duration = duration * 0.6
                 pathAnim.beginTime = 0.0
+                maskLayer.position = offBtnPos
             } else {
                 pathAnim.fromValue = circlePath
                 pathAnim.toValue = rectPath
-                pathAnim.duration = duration * 0.9
-                pathAnim.beginTime = 0.1
+                pathAnim.duration = duration * 0.8
+                pathAnim.beginTime = 0.0
+                maskLayer.position = screenCenter
             }
+            pathAnim.timingFunction = CAMediaTimingFunction(name: animType == .offBtnFadeInto ? .easeIn : .easeOut)
 
             let maskAnims = CAAnimationGroup()
             maskAnims.animations = [
@@ -159,13 +162,13 @@ extension CALayer {
                     fromValue: animType == .offBtnFadeInto ? 1.0 : 0.0,
                     toValue: animType == .offBtnFadeInto ? 0.0 : 1.0,
                     beginTime: 0.0, duration: duration,
-                    easingType: .easeOut
+                    easingType: .linear
                 ),
                 createPointAnim(
                     fromValue: animType == .offBtnFadeInto ? screenCenter : offBtnPos,
                     toValue: animType == .offBtnFadeInto ? offBtnPos : screenCenter,
-                    beginTime: 0.0, duration: duration,
-                    easingType: .easeOut
+                    beginTime: 0.0, duration: animType == .offBtnFadeInto ? duration * 0.9 : duration,
+                    easingType: .linear
                 )
             ]
             maskAnims.duration = duration
@@ -203,8 +206,8 @@ extension CALayer {
 
         // finish the animation
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.1) {
-            snapshotLayer.removeFromSuperlayer()
             maskLayer.removeFromSuperlayer()
+            snapshotLayer.removeFromSuperlayer()
             completion?()
         }
 
