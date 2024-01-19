@@ -55,12 +55,13 @@ extension CALayer {
         // Determine which animation to play
         switch (animType) {
         case .shrink, .expand:
-            // Shrink or Expand to Center
+            /* Start Shrink or Expand to Center */
             let targetScale: CGFloat = animType == .expand ? 5.0 : 0.0
             snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
             snapshotLayer.add(createFloatAnim(toValue: targetScale, duration: duration), forKey: nil)
+            /* End Shrink or Expand */
         case .slideLeft, .slideRight, .slideUp, .slideDown:
-            // Slide to a side
+            /* Start Slide to a Side */
             let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0.5))
             let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0.5))
             let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
@@ -68,8 +69,9 @@ extension CALayer {
                 createPointAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
                 forKey: nil
             )
+            /* End Slide to a Side */
         case .tv:
-            // TV Off
+            /* Start CRT TV */
             let scaleAnims = CAAnimationGroup()
             // Width Animation
             let targetScaleWidth: CGFloat = 3/snapshotLayer.bounds.size.width
@@ -79,34 +81,47 @@ extension CALayer {
             let targetScaleHeight: CGFloat = 3/snapshotLayer.bounds.size.height
             snapshotLayer.setValue(targetScaleHeight, forKeyPath: "transform.scale.y")
 
+            // Color Animation
+            let colorLayer = CALayer()
+            colorLayer.frame = snapshotLayer.bounds
+            colorLayer.backgroundColor = UIColor.white.cgColor
+            colorLayer.opacity = 1.0
+            snapshotLayer.addSublayer(colorLayer)
+            snapshotLayer.opacity = 0.0
+            
+            let colorAnims = CAAnimationGroup()
+
             scaleAnims.animations = [
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleHeight,
-                    beginTime: 0, duration: duration * 0.2,
+                    beginTime: 0, duration: duration * 0.45,
                     keyPath: "transform.scale.y", easingType: .easeIn
                 ),
                 createFloatAnim(
                     fromValue: 1.0, toValue: targetScaleWidth,
-                    beginTime: duration * 0.25, duration: duration * 0.25,
+                    beginTime: duration * 0.5, duration: duration * 0.4,
                     keyPath: "transform.scale.x", easingType: .easeOut
+                ),
+                createFloatAnim(
+                    fromValue: 1.0, toValue: 0.0,
+                    beginTime: duration * 0.9, duration: duration * 0.1,
+                    keyPath: "opacity"
                 )
             ]
-            scaleAnims.duration = duration * 0.5
+            scaleAnims.duration = duration
+            colorAnims.animations = [
+                createFloatAnim(
+                    fromValue: 0.0, toValue: 1.0,
+                    beginTime: duration * 0.3, duration: duration * 0.2,
+                    keyPath: "opacity"
+                )
+            ]
+            colorAnims.duration = duration
             snapshotLayer.add(scaleAnims, forKey: nil)
-
-            // Background Color Animation
-            // doesn't work yet
-            /*let bgAnim = CABasicAnimation(keyPath: "backgroundColor")
-            bgAnim.fromValue = UIColor.white.withAlphaComponent(0.0).cgColor
-            bgAnim.toValue = UIColor.white.withAlphaComponent(1.0).cgColor
-            bgAnim.duration = duration * 0.9
-            bgAnim.beginTime = duration * 0.1
-            bgAnim.fillMode = CAMediaTimingFillMode.backwards
-            bgAnim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-            snapshotLayer.backgroundColor = UIColor.white.withAlphaComponent(1.0).cgColor
-            snapshotLayer.add(bgAnim, forKey: nil)*/
+            colorLayer.add(colorAnims, forKey: nil)
+            /* End CRT TV */
         case .offBtnFadeInto, .offBtnFadeOut:
-            // Fade Into or From Off Button
+            /* Start Fade Into or From Off Button */
             // Mask
             maskLayer.frame = snapshotLayer.frame
             let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
@@ -155,8 +170,9 @@ extension CALayer {
             ]
             maskAnims.duration = duration
             maskLayer.add(maskAnims, forKey: nil)
+            /* End Fade Into or From Off Button */
         case .genie:
-            // Genie Suck Effect (into off button)
+            /* Start Genie Suck Effect (into off button) */
             // 3D Transformation
             snapshotLayer.transform = CATransform3DMakeRotation(CGFloat.pi / 2, 1, 0, 0)
             snapshotLayer.add(
@@ -199,6 +215,7 @@ extension CALayer {
         self.contents = nil
         self.backgroundColor = UIColor.clear.cgColor
         self.masksToBounds = false
+        /* End Genie Suck Effect */
     }
 
     private func snapshot() -> CGImage? {
