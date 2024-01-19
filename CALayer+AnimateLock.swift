@@ -177,31 +177,41 @@ extension CALayer {
         case .genie:
             /* Start Genie Suck Effect (into off button) */
             // 3D Transformation
-            snapshotLayer.transform = CATransform3DMakeRotation(CGFloat.pi / 2, 1, 0, 0)
-            snapshotLayer.add(
-                createFloatAnim(
-                    fromValue: 0.0, toValue: (.pi * 0.5),
-                    beginTime: 0.0, duration: duration * 0.5,
-                    keyPath: "transform.rotation.y", easingType: .easeOut
-                ), forKey: nil
-            )
-            /*let warpAnim = CABasicAnimation(keyPath: "rotation.y")
-            warpAnim.fromValue = 0.0
-            warpAnim.toValue = [60.0 * .pi / 180.0, 0.0, 1.0, 0.0]
-            warpAnim.duration = duration
-            warpAnim.beginTime = 0.0
-            warpAnim.fillMode = CAMediaTimingFillMode.backwards
-            warpAnim.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            // Animation Group
+            let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
+            let offBtnPos = CGPoint(x: screenCenter.x + snapshotLayer.bounds.size.width * 0.55, y: screenCenter.y - snapshotLayer.bounds.size.height * 0.175)
+            snapshotLayer.setValue(offBtnPos, forKeyPath: "position")
+            
+            var transformRotate3D = CATransform3DIdentity
+            transformRotate3D.m34 = 1.0 / -500.0
+            let rotationAngle = 45.0
+            transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle * .pi / 180.0, 0.0, 1.0, 0.0)
+            snapshotLayer.transform = transformRotate3D
+            
+            snapshotLayer.setValue(rotationAngle * .pi / 180.0, forKeyPath: "transform.rotation.y")
+            snapshotLayer.setValue(0.05, forKeyPath: "transform.scale")
+            
             let animGroup = CAAnimationGroup()
+            
             animGroup.animations = [
                 createFloatAnim(
+                    fromValue: 0.0, toValue: rotationAngle * .pi / 180.0,
+                    beginTime: 0.0, duration: duration * 0.6,
+                    keyPath: "transform.rotation.y", easingType: .easeOut
+                ),
+                createPointAnim(
+                    fromValue: screenCenter, toValue: offBtnPos,
+                    beginTime: 0.0, duration: duration,
+                    easingType: .easeIn
+                ),
+                createFloatAnim(
                     fromValue: 1.0, toValue: 0.0,
-                    beginTime: duration * 0.1, duration: duration * 0.9,
-                    easingType: .easeOut
+                    beginTime: 0.0, duration: duration,
+                    easingType: .easeIn
                 )
             ]
-            snapshotLayer.add(warpAnim, forKey: nil)*/
+            animGroup.duration = duration
+            snapshotLayer.add(animGroup, forKey: nil)
+            /* End Genie Suck Effect */
         }
 
         // finish the animation
@@ -218,7 +228,6 @@ extension CALayer {
         self.contents = nil
         self.backgroundColor = UIColor.clear.cgColor
         self.masksToBounds = false
-        /* End Genie Suck Effect */
     }
 
     private func snapshot() -> CGImage? {
