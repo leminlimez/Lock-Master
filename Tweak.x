@@ -6,6 +6,7 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 */
 
 #import <UIKit/UIKit.h>
+#import <Cephei/HBPreferences.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
 #import <LockMaster-Swift.h>
@@ -18,17 +19,18 @@ Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock
 #pragma mark - Preference Variables
 BOOL enabled = YES;
 BOOL disableInLPM = NO;
-int animType = 0;
-double animDuration = 0.5;
+NSInteger animType = 0;
+double animDuration = 0.25;
 // Lock Sound
-int lockSound = 0; // TODO: Make it better for custom sound uploading
+NSInteger lockSound = 0; // TODO: Make it better for custom sound uploading
 
 #pragma mark - Global Variables
+HBPreferences *prefs;
 bool isAnimationInProgress = false;
 int animationCounter = 0;
 
 #pragma mark - Preference Methods
-void setPrefs() {
+/*void setPrefs() {
 	NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
 	enabled = [[preferences valueForKey:@"isEnabled"] boolValue];
 	disableInLPM = [[preferences valueForKey:@"disableInLPM"] boolValue];
@@ -40,7 +42,7 @@ void setPrefs() {
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	setPrefs();
-}
+}*/
 
 #pragma mark - Bundle Getter
 NSBundle *LockMasterBundle() {
@@ -243,7 +245,20 @@ static LockMaster *__strong lockMaster;
 
 #pragma mark - Updating Preferences
 %ctor {
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("com.leemin.lockmaster.prefschanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+	/*CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("com.leemin.lockmaster.prefschanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 	setPrefs();
-	%init;
+	%init;*/
+	prefs = [[HBPreferences alloc] initWithIdentifier:@"com.leemin.lockmasterprefs"];
+
+	// register the preference variables
+	[prefs registerBool:&enabled default:YES forKey:@"isEnabled"];
+	[prefs registerBool:&disableInLPM default:NO forKey:@"disableInLPM"];
+
+	[prefs registerInteger:&animType default:0 forKey:@"animType"];
+	[prefs registerDouble:&animDuration default:0.25 forKey:@"animDuration"];
+
+	[prefs registerInteger:&lockSound default:0 forKey:@"lockSound"];
+
+	[prefs registerPreferenceChangeBlock:^{
+	}];
 }

@@ -8,6 +8,7 @@ TWEAK_NAME = LockMaster
 
 LockMaster_FILES = Tweak.x UIView+AnimateLock.swift AnimationType.swift CALayer+AnimateLock.swift
 LockMaster_CFLAGS = -fobjc-arc
+$(TWEAK_NAME)_EXTRA_FRAMEWORKS += Cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += lockmasterpreferences
