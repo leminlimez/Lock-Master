@@ -30,19 +30,30 @@ bool isAnimationInProgress = false;
 int animationCounter = 0;
 
 #pragma mark - Preference Methods
-/*void setPrefs() {
-	NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
+void setPrefs() {
+	/*NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
 	enabled = [[preferences valueForKey:@"isEnabled"] boolValue];
 	disableInLPM = [[preferences valueForKey:@"disableInLPM"] boolValue];
 	animType = [[preferences valueForKey:@"animType"] integerValue];
 	animDuration = [[preferences valueForKey:@"animDuration"] doubleValue];
 
-	lockSound = [[preferences valueForKey:@"lockSound"] integerValue];
+	lockSound = [[preferences valueForKey:@"lockSound"] integerValue];*/
+
+	HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"com.leemin.lockmasterprefs"];
+
+	// register the preference variables
+	[prefs registerBool:&enabled default:YES forKey:@"isEnabled"];
+	[prefs registerBool:&disableInLPM default:NO forKey:@"disableInLPM"];
+
+	[prefs registerInteger:&animType default:0 forKey:@"animType"];
+	[prefs registerDouble:&animDuration default:0.25 forKey:@"animDuration"];
+
+	[prefs registerInteger:&lockSound default:0 forKey:@"lockSound"];
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	setPrefs();
-}*/
+}
 
 #pragma mark - Bundle Getter
 NSBundle *LockMasterBundle() {
@@ -245,20 +256,7 @@ static LockMaster *__strong lockMaster;
 
 #pragma mark - Updating Preferences
 %ctor {
-	/*CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("com.leemin.lockmaster.prefschanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("com.leemin.lockmaster.prefschanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 	setPrefs();
-	%init;*/
-	prefs = [[HBPreferences alloc] initWithIdentifier:@"com.leemin.lockmasterprefs"];
-
-	// register the preference variables
-	[prefs registerBool:&enabled default:YES forKey:@"isEnabled"];
-	[prefs registerBool:&disableInLPM default:NO forKey:@"disableInLPM"];
-
-	[prefs registerInteger:&animType default:0 forKey:@"animType"];
-	[prefs registerDouble:&animDuration default:0.25 forKey:@"animDuration"];
-
-	[prefs registerInteger:&lockSound default:0 forKey:@"lockSound"];
-
-	[prefs registerPreferenceChangeBlock:^{
-	}];
+	%init;
 }
