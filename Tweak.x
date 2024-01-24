@@ -21,6 +21,7 @@ BOOL enabled = YES;
 BOOL disableInLPM = NO;
 NSInteger animType = 0;
 double animDuration = 0.25;
+double fadeExtension = 0.2;
 // Lock Sound
 NSInteger lockSound = 0; // TODO: Make it better for custom sound uploading
 
@@ -47,6 +48,7 @@ void setPrefs() {
 
 	[prefs registerInteger:&animType default:0 forKey:@"animType"];
 	[prefs registerDouble:&animDuration default:0.25 forKey:@"animDuration"];
+	[prefs registerDouble:&fadeExtension default:0.2 forKey:@"fadeExtension"];
 
 	[prefs registerInteger:&lockSound default:0 forKey:@"lockSound"];
 }
@@ -92,7 +94,7 @@ extern UIImage* _UICreateScreenUIImage();
 	UIView *whiteOverlay;
 }
 	-(id)init;
-	-(void)playLockAnimation:(float)arg1;
+	-(void)playLockAnimation:(float)arg1 extendFadeBy:(double)arg2;
 	-(void)reset;
 @end
 
@@ -135,7 +137,7 @@ static LockMaster *__strong lockMaster;
 	return self;
 }
 
-- (void)playLockAnimation:(float)totalTime {
+- (void)playLockAnimation:(float)totalTime extendFadeBy:(double)extendFade {
 	@try {
 		isAnimationInProgress = true;
 		animationCounter++;
@@ -153,7 +155,7 @@ static LockMaster *__strong lockMaster;
 		if (localAnimType < 0 || localAnimType > ANIMATION_TYPE_COUNT)
 			localAnimType = 0;
 		
-		[subView animateLock:localAnimType duration:totalTime completion:^{
+		[subView animateLock:localAnimType duration:totalTime extendFadeBy: extendFade completion:^{
 			if (isAnimationInProgress && localAnimationCounter == animationCounter) {
 				// the purpose of animationCounter is to prevent this block from a stray cancelled animation reset a new ongoing animation
 				[self reset];
@@ -205,8 +207,8 @@ static LockMaster *__strong lockMaster;
 		&& (arg1 == 0 && [self screenIsOn])
 		&& !isAnimationInProgress
 	) {
-		arg2 = animDuration + 0.1;
-		[lockMaster playLockAnimation:arg2 - 0.1];
+		arg2 = animDuration + fadeExtension;
+		[lockMaster playLockAnimation:(arg2 - fadeExtension) extendFadeBy:fadeExtension];
 	}
 	%orig(arg1, arg2, arg3, arg4, arg5);
 }

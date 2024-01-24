@@ -25,7 +25,7 @@ import UIKit
 import QuartzCore
 
 extension CALayer {
-    open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5,
+    open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5, fadeExtension: Double = 0.2,
         completion: (() -> ())? = nil) {
         guard let snapshot = self.snapshot() else {
             return
@@ -215,7 +215,7 @@ extension CALayer {
         }
 
         // finish the animation
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + fadeExtension) {
             maskLayer.removeFromSuperlayer()
             snapshotLayer.removeFromSuperlayer()
             completion?()

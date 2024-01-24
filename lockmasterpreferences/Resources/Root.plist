@@ -93,6 +93,12 @@
 		</dict>
 		<!-- Animation Duration -->
 		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Animation Duration</string>
+		</dict>
+		<dict>
 			<key>PostNotification</key>
 			<string>com.leemin.lockmaster.prefschanged</string>
 			<key>cell</key>
@@ -109,6 +115,37 @@
 			<string>animDuration</string>
 			<key>key</key>
 			<string>animDuration</string>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<false/>
+		</dict>
+		<!-- Fade Extension -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Fade Extension</string>
+			<key>footerText</key>
+			<string>How long the default fade animation plays for in addition to the animation duration.</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.leemin.lockmaster.prefschanged</string>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0.0</real>
+			<key>max</key>
+			<real>1.0</real>
+			<key>default</key>
+			<real>0.2</real>
+			<key>defaults</key>
+			<string>com.leemin.lockmasterprefs</string>
+			<key>id</key>
+			<string>fadeExtension</string>
+			<key>key</key>
+			<string>fadeExtension</string>
 			<key>showValue</key>
 			<true/>
 			<key>isSegmented</key>
