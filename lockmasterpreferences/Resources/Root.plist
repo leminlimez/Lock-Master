@@ -157,6 +157,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Sound Options</string>
+			<key>footerText</key>
+			<string>Custom sounds and more options will arrive at a later date</string>
 		</dict>
 		<!-- Lock Sound -->
 		<dict>
