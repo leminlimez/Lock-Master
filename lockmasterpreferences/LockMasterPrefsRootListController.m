@@ -20,32 +20,44 @@ NSBundle *LockMasterBundle() {
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
-		for (PSSpecifier *specifier in _specifiers) {
-			if ([[specifier propertyForKey:@"id"] isEqualToString:@"customLockSound"]) {
-				NSMutableArray *validTitles = [[NSMutableArray alloc] init];
-				NSMutableArray *validValues = [[NSMutableArray alloc] init];
-
-				[validTitles addObject:@"Default"];
-				[validValues addObject:@"Default"];
-
-				NSString *audioPath = [NSString stringWithFormat:@"%@/LockSounds", [LockMasterBundle() bundlePath]];
-				NSArray *audioFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:audioPath error:NULL];
-
-				[audioFiles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    				NSString *fileName = (NSString *)obj;
-					if ([fileName hasSuffix:@".m4a"] || [fileName hasSuffix:@".mp3"] || [fileName hasSuffix:@".wav"]) {
-						NSString *parsedTitle = [[fileName substringToIndex:[fileName length] - 4] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
-						[validTitles addObject:parsedTitle];
-						[validValues addObject:fileName];
-					}
-				}];
-				[specifier setProperty:[validTitles copy] forKey:@"validTitles"];
-				[specifier setProperty:[validValues copy] forKey:@"validValues"];
-			}
-		}
 	}
 
 	return _specifiers;
+}
+
+- (NSArray *)lockSoundFileNames {
+	if (!_lockSoundFileNames) {
+		NSMutableArray *fileNames = [[NSMutableArray alloc] init];
+		[fileNames addObject:@"Default"];
+		
+		NSString *audioPath = [NSString stringWithFormat:@"%@/LockSounds", [LockMasterBundle() bundlePath]];
+		NSArray *audioFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:audioPath error:NULL];
+
+		[audioFiles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			NSString *fileName = (NSString *)obj;
+			if ([fileName hasSuffix:@".m4a"] || [fileName hasSuffix:@".mp3"] || [fileName hasSuffix:@".wav"]) {
+				[fileNames addObject:fileName];
+			}
+		}];
+		_lockSoundFileNames = fileNames;
+	}
+	return _lockSoundFileNames;
+}
+
+- (NSArray *)LockSoundTitles {
+	NSMutableArray *mutableTitles = [[self lockSoundFileNames] mutableCopy];
+	for (int i = 0; i < [mutableTitles count]; i++) {
+		NSString *fileName = [mutableTitles objectAtIndex:i];
+		if (![fileName isEqualToString:@"Default"]) {
+			NSString *parsedTitle = [[fileName substringToIndex:[fileName length] - 4] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+			[mutableTitles replaceObjectAtIndex:i withObject:parsedTitle];
+		}
+	}
+	return mutableTitles;
+}
+
+- (NSArray *)LockSoundValues {
+	return [self lockSoundFileNames];
 }
 
 - (void)openGithub {

@@ -3,7 +3,9 @@
 #import <Preferences/PSListItemsController.h>
 #import <Cephei/HBPreferences.h>
 
-@interface LockMasterPrefsRootListController : PSListController
+@interface LockMasterPrefsRootListController : PSListController {
+    NSArray *_lockSoundFileNames;
+}
 
 - (NSArray *)specifiers;
 
