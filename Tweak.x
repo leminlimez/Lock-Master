@@ -1,8 +1,8 @@
 /*
 This tweak is meant to be a more stable fork of the LockAnim tweak by julioverne.
 Original tweak found here: https://github.com/julioverne/LockAnim
-This tweak was also an adaptation of Disintegration Lock.
-Disintegration Lock can be found here: https://github.com/p0358/DisintegrateLock/tree/master
+This tweak was also an adaptation of Disintegrate Lock.
+Disintegrate Lock can be found here: https://github.com/p0358/DisintegrateLock/tree/master
 */
 
 #import <UIKit/UIKit.h>
@@ -23,7 +23,8 @@ NSInteger animType = 0;
 double animDuration = 0.25;
 double fadeExtension = 0.2;
 // Lock Sound
-NSInteger lockSound = 0; // TODO: Make it better for custom sound uploading
+NSString *lockSound = @"Default";
+NSString *lockSoundPath = @"";
 
 #pragma mark - Global Variables
 HBPreferences *prefs;
@@ -50,7 +51,10 @@ void setPrefs() {
 	[prefs registerDouble:&animDuration default:0.25 forKey:@"animDuration"];
 	[prefs registerDouble:&fadeExtension default:0.2 forKey:@"fadeExtension"];
 
-	[prefs registerInteger:&lockSound default:0 forKey:@"lockSound"];
+	[prefs registerObject:&lockSound default:@"Default" forKey:@"customLockSound"];
+	if (![lockSound isEqualToString:@"Default"] && ![lockSound isEqualToString:@""]) {
+		lockSoundPath = [NSString stringWithFormat:@"%@/LockSounds/%@", [LockMasterBundle() bundlePath], lockSound];
+	}
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -236,17 +240,8 @@ static LockMaster *__strong lockMaster;
 
 %hook SBSleepWakeHardwareButtonInteraction
 - (void)_playLockSound {
-	if (lockSound != 0) {
-		NSString *fileName;
-		if (lockSound == 1) {
-			fileName = [NSString stringWithFormat:@"Old_Lock"];
-		} else if (lockSound == 2) {
-			fileName = [NSString stringWithFormat: @"Windows_XP"];
-		} else {
-			%orig;
-			return;
-		}
-		NSURL *soundURL = [NSURL fileURLWithPath: [NSString stringWithFormat:@"%@/LockSounds/%@.m4a", [LockMasterBundle() bundlePath], fileName]];
+	if (![lockSound isEqualToString:@"Default"] && [[NSFileManager defaultManager] fileExistsAtPath:lockSoundPath]) {
+		NSURL *soundURL = [NSURL fileURLWithPath:lockSoundPath];
 		SystemSoundID sound = 0;
 		AudioServicesCreateSystemSoundID((CFURLRef) CFBridgingRetain(soundURL), &sound);
 		AudioServicesPlaySystemSound((SystemSoundID) sound);
