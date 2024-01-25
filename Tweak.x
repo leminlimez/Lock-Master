@@ -31,6 +31,20 @@ HBPreferences *prefs;
 bool isAnimationInProgress = false;
 int animationCounter = 0;
 
+#pragma mark - Bundle Getter
+NSBundle *LockMasterBundle() {
+    static NSBundle *bundle = nil;
+    static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+        NSString *tweakBundlePath = [[NSBundle mainBundle] pathForResource:@"LockMasterPreferences" ofType:@"bundle"];
+        if (tweakBundlePath)
+            bundle = [NSBundle bundleWithPath:tweakBundlePath];
+        else
+            bundle = [NSBundle bundleWithPath:ROOT_PATH_NS(@"/Library/PreferenceBundles/LockMasterPreferences.bundle")];
+    });
+    return bundle;
+}
+
 #pragma mark - Preference Methods
 void setPrefs() {
 	/*NSDictionary *preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.leemin.lockmasterprefs"];
@@ -59,20 +73,6 @@ void setPrefs() {
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	setPrefs();
-}
-
-#pragma mark - Bundle Getter
-NSBundle *LockMasterBundle() {
-    static NSBundle *bundle = nil;
-    static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-        NSString *tweakBundlePath = [[NSBundle mainBundle] pathForResource:@"LockMasterPreferences" ofType:@"bundle"];
-        if (tweakBundlePath)
-            bundle = [NSBundle bundleWithPath:tweakBundlePath];
-        else
-            bundle = [NSBundle bundleWithPath:ROOT_PATH_NS(@"/Library/PreferenceBundles/LockMasterPreferences.bundle")];
-    });
-    return bundle;
 }
 
 #pragma mark - Necessary Classes
