@@ -5,9 +5,12 @@ Customize the iOS Locking Experience!
 
 ## Features
 - Custom lock animations
-- Change the lock sound
+- Custom lock sound
+    - Supported formats: `.m4a`, `.mp3`, `.wav`
 
 ## Coming Soon
-- True custom lock sounds
 - Turning on animations
 - More customization of animation events
+
+## Credits
+- This tweak is a fork of both [LockAnim](https://github.com/julioverne/LockAnim) and [DisintegrateLock](https://github.com/p0358/DisintegrateLock/tree/master) (Moreso DisintegrateLock).

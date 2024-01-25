@@ -70,7 +70,7 @@
 				<string>Slide Down</string>
 				<string>CRT TV</string>
 				<string>Fade Into Off Button</string>
-				<string>Fade Out of Off Button</string>
+				<!--<string>Fade Out of Off Button</string>-->
 				<string>Genie</string>
 			</array>
 			<key>validValues</key>
@@ -83,7 +83,7 @@
 				<integer>5</integer>
 				<integer>6</integer>
 				<integer>7</integer>
-				<integer>8</integer>
+				<!--<integer>8</integer>-->
 				<integer>9</integer>
 			</array>
 			<key>default</key>
@@ -157,8 +157,6 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Sound Options</string>
-			<key>footerText</key>
-			<string>Custom sounds and more options will arrive at a later date</string>
 		</dict>
 		<!-- Lock Sound -->
 		<dict>
@@ -168,24 +166,22 @@
 			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>Lock Sound</string>
+			<key>id</key>
+			<string>customLockSound</string>
 			<key>key</key>
-			<string>lockSound</string>
+			<string>customLockSound</string>
 			<key>detail</key>
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
 			<array>
-				<string>Default</string>
-				<string>Old</string>
-				<string>Windows XP</string>
+			<string>Default</string>
 			</array>
 			<key>validValues</key>
 			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
+			<string>Default</string>
 			</array>
 			<key>default</key>
-			<integer>0</integer>
+			<string>Default</string>
 			<key>defaults</key>
 			<string>com.leemin.lockmasterprefs</string>
 		</dict>
