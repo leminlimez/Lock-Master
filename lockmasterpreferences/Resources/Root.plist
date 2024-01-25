@@ -172,14 +172,10 @@
 			<string>customLockSound</string>
 			<key>detail</key>
 			<string>PSListItemsController</string>
-			<key>validTitles</key>
-			<array>
-			<string>Default</string>
-			</array>
-			<key>validValues</key>
-			<array>
-			<string>Default</string>
-			</array>
+			<key>titlesDataSource</key>
+			<string>LockSoundTitles</string>
+			<key>valuesDataSource</key>
+			<string>LockSoundValues</string>
 			<key>default</key>
 			<string>Default</string>
 			<key>defaults</key>
