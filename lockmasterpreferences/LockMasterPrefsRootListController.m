@@ -1,5 +1,4 @@
 #import <Foundation/Foundation.h>
-#import <Preferences/PSListItemsController.h>
 #import "LockMasterPrefsRootListController.h"
 #import <rootless.h>
 
