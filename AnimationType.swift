@@ -25,4 +25,6 @@ import Foundation
     case offBtnFadeInto
     case offBtnFadeOut
     case genie
+    case flip
+    case spin
 }
