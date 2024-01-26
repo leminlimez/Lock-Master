@@ -70,7 +70,7 @@ extension CALayer {
                 forKey: nil
             )
             /* End Slide to a Side */
-        case .tv:
+        case .tv, .tvNoFadeToWhite:
             /* Start CRT TV */
             let scaleAnims = CAAnimationGroup()
             // Width Animation
@@ -80,16 +80,6 @@ extension CALayer {
             // Height Animation
             let targetScaleHeight: CGFloat = 3/snapshotLayer.bounds.size.height
             snapshotLayer.setValue(targetScaleHeight, forKeyPath: "transform.scale.y")
-
-            // Color Animation
-            let colorLayer = CALayer()
-            colorLayer.frame = snapshotLayer.bounds
-            colorLayer.backgroundColor = UIColor.white.cgColor
-            colorLayer.opacity = 1.0
-            snapshotLayer.addSublayer(colorLayer)
-            snapshotLayer.opacity = 0.0
-            
-            let colorAnims = CAAnimationGroup()
 
             scaleAnims.animations = [
                 createFloatAnim(
@@ -109,16 +99,29 @@ extension CALayer {
                 )
             ]
             scaleAnims.duration = duration
-            colorAnims.animations = [
-                createFloatAnim(
-                    fromValue: 0.0, toValue: 1.0,
-                    beginTime: duration * 0.3, duration: duration * 0.2,
-                    keyPath: "opacity"
-                )
-            ]
-            colorAnims.duration = duration
+
+            // Color Animation
+            if animType == .tv {
+                let colorLayer = CALayer()
+                colorLayer.frame = snapshotLayer.bounds
+                colorLayer.backgroundColor = UIColor.white.cgColor
+                colorLayer.opacity = 1.0
+                snapshotLayer.addSublayer(colorLayer)
+                snapshotLayer.opacity = 0.0
+                
+                let colorAnims = CAAnimationGroup()
+
+                colorAnims.animations = [
+                    createFloatAnim(
+                        fromValue: 0.0, toValue: 1.0,
+                        beginTime: duration * 0.3, duration: duration * 0.2,
+                        keyPath: "opacity"
+                    )
+                ]
+                colorAnims.duration = duration
+                colorLayer.add(colorAnims, forKey: nil)
+            }
             snapshotLayer.add(scaleAnims, forKey: nil)
-            colorLayer.add(colorAnims, forKey: nil)
             /* End CRT TV */
         case .offBtnFadeInto, .offBtnFadeOut:
             /* Start Fade Into or From Off Button */
