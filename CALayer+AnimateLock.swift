@@ -212,11 +212,11 @@ extension CALayer {
             animGroup.duration = duration
             snapshotLayer.add(animGroup, forKey: nil)
             /* End Genie Suck Effect */
-        case .flip, .spin:
+        case .flip, .spinSlower, .spinFaster:
             /* Start Flip/Spin Effect */
             var transformRotate3D = CATransform3DIdentity
             transformRotate3D.m34 = 1.0 / -500.0
-            let rotationAngle = animType == .flip ? 90.0 : 630.0
+            let rotationAngle = animType == .flip ? 90.0 : (animType == .spinSlower ? 270.0 : 630.0)
             transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle * .pi / 180.0, 0.0, 1.0, 0.0)
             snapshotLayer.transform = transformRotate3D
             

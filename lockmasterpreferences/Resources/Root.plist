@@ -73,7 +73,8 @@
 				<!--<string>Fade Out of Off Button</string>-->
 				<string>Genie</string>
 				<string>Flip</string>
-				<string>Spin</string>
+				<string>Spin (Slower)</string>
+				<string>Spin (Faster)</string>
 			</array>
 			<key>validValues</key>
 			<array>
@@ -89,6 +90,7 @@
 				<integer>9</integer>
 				<integer>10</integer>
 				<integer>11</integer>
+				<integer>12</integer>
 			</array>
 			<key>default</key>
 			<integer>0</integer>
