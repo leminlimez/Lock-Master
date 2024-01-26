@@ -166,7 +166,11 @@
 			<key>label</key>
 			<string>Sound Options</string>
 			<key>footerText</key>
+			<!-- Below will be improved later by coding in specifiers -->
+			<!-- Rootless: -->
 			<string>LockMaster will load sounds from /var/jb/Library/PreferenceBundles/LockMasterPreferences.bundle/LockSounds/. If you added a new sound, you need to restart the settings app.</string>
+			<!-- Rootful: -->
+			<!--<string>LockMaster will load sounds from /Library/PreferenceBundles/LockMasterPreferences.bundle/LockSounds/. If you added a new sound, you need to restart the settings app.</string>-->
 		</dict>
 		<!-- Lock Sound -->
 		<dict>
