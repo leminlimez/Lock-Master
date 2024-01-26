@@ -212,6 +212,22 @@ extension CALayer {
             animGroup.duration = duration
             snapshotLayer.add(animGroup, forKey: nil)
             /* End Genie Suck Effect */
+        case .flip, .spin:
+            /* Start Flip/Spin Effect */
+            var transformRotate3D = CATransform3DIdentity
+            transformRotate3D.m34 = 1.0 / -500.0
+            let rotationAngle = animType == .flip ? 90.0 : 630.0
+            transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle * .pi / 180.0, 0.0, 1.0, 0.0)
+            snapshotLayer.transform = transformRotate3D
+            
+            snapshotLayer.setValue(rotationAngle * .pi / 180.0, forKeyPath: "transform.rotation.y")
+            
+            snapshotLayer.add(createFloatAnim(
+                fromValue: 0.0, toValue: rotationAngle * .pi / 180.0,
+                beginTime: 0.0, duration: duration,
+                keyPath: "transform.rotation.y", easingType: animType == .flip ? .easeOut : .easeInEaseOut
+            ), forKey: nil)
+            /* End Flip/Spin Effect */
         }
 
         // finish the animation
