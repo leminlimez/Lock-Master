@@ -39,27 +39,27 @@ extension CALayer {
         snapshotLayer.drawsAsynchronously = true
         self.addSublayer(snapshotLayer)
 
-        // CG Animation Stuff
-        /*if animType != .tv && animType != .offBtnFadeInto && animType != .offBtnFadeOut {
-            let alphaAnimation = CABasicAnimation(keyPath: "opacity")
-            alphaAnimation.fromValue = 1.0
-            alphaAnimation.toValue = 0.0
-            alphaAnimation.duration = duration + 0.05
-            alphaAnimation.beginTime = 0
-            alphaAnimation.fillMode = CAMediaTimingFillMode.backwards
-            alphaAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-            snapshotLayer.opacity = 0.0
-            snapshotLayer.add(alphaAnimation, forKey: nil)
-        }*/
-
         // Determine which animation to play
         switch (animType) {
-        case .shrink, .expand:
-            /* Start Shrink or Expand to Center */
-            let targetScale: CGFloat = animType == .expand ? 5.0 : 0.0
+        case .shrink:
+            /* Start Shrink to Center */
+            let targetScale: CGFloat = 0.0
             snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
             snapshotLayer.add(createFloatAnim(toValue: targetScale, duration: duration), forKey: nil)
-            /* End Shrink or Expand */
+            /* End Shrink */
+        case .expand:
+            /* Start Expand to Center */
+            let targetScale: CGFloat = 10.0 // OLD VALUE: 5.0
+            snapshotLayer.setValue(targetScale, forKeyPath: "transform.scale")
+            snapshotLayer.setValue(0.0, forKeyPath: "opacity")
+            let expandAnims = CAAnimationGroup()
+            expandAnims.animations = [
+                createFloatAnim(fromValue: 1.0, toValue: targetScale, duration: duration, easingType: .easeIn),
+                createFloatAnim(fromValue: 1.0, toValue: 0.0, duration: duration, keyPath: "opacity")
+            ]
+            expandAnims.duration = duration
+            snapshotLayer.add(expandAnims, forKey: nil)
+            /* End Expand */
         case .slideLeft, .slideRight, .slideUp, .slideDown:
             /* Start Slide to a Side */
             let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
