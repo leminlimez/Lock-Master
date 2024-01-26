@@ -157,6 +157,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Sound Options</string>
+			<key>footerText</key>
+			<string>LockMaster will load sounds from /var/jb/Library/PreferenceBundles/LockMasterPreferences.bundle/LockSounds/. If you added a new sound, you need to restart the settings app.</string>
 		</dict>
 		<!-- Lock Sound -->
 		<dict>
@@ -180,6 +182,14 @@
 			<string>Default</string>
 			<key>defaults</key>
 			<string>com.leemin.lockmasterprefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>openSoundsFolder</string>
+			<key>label</key>
+			<string>Open Sounds Folder</string>
 		</dict>
 		<!-- Buttons -->
 		<dict>

@@ -25,6 +25,7 @@ NSBundle *LockMasterBundle() {
 	return _specifiers;
 }
 
+// TODO: Save sound files to /var/jb/Library/LockMaster instead
 - (NSArray *)lockSoundFileNames {
 	if (!_lockSoundFileNames) {
 		NSMutableArray *fileNames = [[NSMutableArray alloc] init];
@@ -60,12 +61,20 @@ NSBundle *LockMasterBundle() {
 	return [self lockSoundFileNames];
 }
 
+- (void)openURLWithString:(NSString *)url {
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:nil];
+}
+
+- (void)openSoundsFolder {
+	[self openURLWithString:[NSString stringWithFormat:@"filza://view%@/LockSounds/", [LockMasterBundle() bundlePath]]];
+}
+
 - (void)openGithub {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/leminlimez/Lock-Master"] options:@{} completionHandler:nil];
+	[self openURLWithString:@"https://github.com/leminlimez/Lock-Master"];
 }
 
 - (void)openTwitter {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://twitter.com/LeminLimez"] options:@{} completionHandler:nil];
+	[self openURLWithString:@"https://twitter.com/LeminLimez"];
 }
 
 @end
