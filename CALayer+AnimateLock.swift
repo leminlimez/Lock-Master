@@ -62,11 +62,13 @@ extension CALayer {
             /* End Shrink or Expand */
         case .slideLeft, .slideRight, .slideUp, .slideDown:
             /* Start Slide to a Side */
-            let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1 : 0.5))
-            let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1 : 0.5))
+            let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
+            let targetPosX: CGFloat = self.bounds.width * (animType == .slideLeft ? -1 : (animType == .slideRight ? 1.5 : 0.5))
+            let targetPosY: CGFloat = self.bounds.height * (animType == .slideUp ? -1 : (animType == .slideDown ? 1.5 : 0.5))
             let targetPos: CGPoint = CGPoint(x: targetPosX, y: targetPosY)
+            snapshotLayer.setValue(targetPos, forKeyPath: "position")
             snapshotLayer.add(
-                createPointAnim(fromValue: snapshotLayer.position, toValue: targetPos, duration: duration),
+                createPointAnim(fromValue: screenCenter, toValue: targetPos, duration: duration),
                 forKey: nil
             )
             /* End Slide to a Side */
