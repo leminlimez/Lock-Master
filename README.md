@@ -1,9 +1,10 @@
 # Lock Master
 Customize the iOS Locking Experience!
 
-**Note: This will NOT work on "semi-jailbreaks" such as Seratonin.** It needs the backboardd to be resigned. Please do not create github issues asking me to add support for them, your issue will be deleted.
+**Note regarding "semi-jailbreaks"**: The only feature that works on "semi-jailbreaks" (such as Seratonin) is the custom lock sound. All other features will not work, as they need the backboardd to be resigned. Please do not create github issues asking me to add support for them, your issue will be deleted.
 
 Supports iOS 14.0+
+
 iPads are currently not supported, sorry for the inconvenience.
 
 ## Features
