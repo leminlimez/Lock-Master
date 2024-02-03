@@ -8,14 +8,17 @@ iPads are currently not supported, sorry for the inconvenience.
 
 ## Features
 - Custom lock animations:
-    - Shrink
-    - Expand
-    - Slide Left, Right, Up, or Down
     - CRT TV (with option to disable flash to white)
+    - Strips
+    - Checker Flip
+    - Explosion
     - Fade Into the Off Button
     - Genie
     - Flip
     - Spin (2 speed options)
+    - Shrink
+    - Expand
+    - Slide Left, Right, Up, or Down
 - Custom lock sound
     - Supported formats: `.m4a`, `.mp3`, `.wav`
 
