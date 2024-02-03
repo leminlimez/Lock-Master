@@ -64,7 +64,7 @@ extension CALayer {
             }
         } else if (animType == .explosion) {
             // Advanced Rectangle Animation
-            self.createGridRectangles(rows: 5, columns: 10, direction: .down) { rects in
+            self.createGridRectangles(rows: 8, columns: 16, direction: .down) { rects in
                 DispatchQueue.main.async {
                     self.animateAdvancedRectangleLock(withRectangles: rects, animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
                 }
@@ -168,21 +168,25 @@ extension CALayer {
                 var curvePoint = CGPoint.zero
                 var endPoint = CGPoint.zero
                 
-                let maxLRShift = 1.0 * randomFloat()
+                let maxLRShift = 1.5 * randomFloat()
                 
-                let x = (self.bounds.width - ((rectLayer.position.x + rectLayer.bounds.width))) * CGFloat(r3)
+                let x1 = (self.bounds.width - ((rectLayer.position.x + rectLayer.bounds.width))) * CGFloat(r3)
+                let x2 = ((rectLayer.position.x + rectLayer.bounds.width)) * CGFloat(r3)
                 let y = (self.bounds.height - ((rectLayer.position.y + rectLayer.bounds.height))) * randomFloat()
                 
-                let endY = self.bounds.height - self.frame.origin.y
+                let endY = self.bounds.height * 1.1
+
+                let sf = rectLayer.position.x / self.bounds.width
+                let truex = (sf * x2) + ((1 - sf) * -x1)
+
+                endPoint = CGPoint(x: truex + self.bounds.width * 0.5, y: endY)
                 
                 if rectLayer.position.x <= self.bounds.width * 0.5 {
-                    endPoint = CGPoint(x: -x, y: endY)
                     curvePoint = CGPoint(x: (((rectLayer.position.x * 0.5) * CGFloat(r3)) * CGFloat(verticalDir)) * CGFloat(maxLRShift), y: -y)
                 } else {
-                    endPoint = CGPoint(x: x, y: endY)
                     curvePoint = CGPoint(x: (((rectLayer.position.x * 0.5) * CGFloat(r3)) * CGFloat(verticalDir) + self.bounds.width) * CGFloat(maxLRShift), y: -y)
                 }
-                
+
                 rectPath.addQuadCurve(to: endPoint, controlPoint: curvePoint)
 
                 let moveAnim = CAKeyframeAnimation(keyPath: "position")
@@ -194,7 +198,7 @@ extension CALayer {
 
                 let transformAnim = CAKeyframeAnimation(keyPath: "transform")
                 transformAnim.values = [rectLayer.transform, CATransform3DConcat(CATransform3DMakeScale(randomFloat(), randomFloat(), randomFloat()), CATransform3DMakeRotation(.pi * (1 + randomFloat()), randomFloat(), randomFloat(), randomFloat()))]
-                let times: [NSNumber] = [0.0, NSNumber(value: duration * 0.25)]
+                let times: [NSNumber] = [0.0, NSNumber(value: duration * 0.6)]
                 transformAnim.keyTimes = times
                 transformAnim.timingFunctions = [
                     CAMediaTimingFunction(name: .easeOut),
