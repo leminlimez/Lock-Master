@@ -62,6 +62,13 @@ extension CALayer {
                     self.animateAdvancedRectangleLock(withRectangles: rects, animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
                 }
             }
+        } else if (animType == .explosion) {
+            // Advanced Rectangle Animation
+            self.createGridRectangles(rows: 5, columns: 10, direction: .down) { rects in
+                DispatchQueue.main.async {
+                    self.animateAdvancedRectangleLock(withRectangles: rects, animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
+                }
+            }
         } else {
             // Basic Animation
             self.animateBasicLock(animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
@@ -119,7 +126,7 @@ extension CALayer {
                 /* End Strips Effect */
             case .checkerFlip:
                 /* Start Checker Flip Effect */
-                let order: Int = (i % 8) + (i / 8)//(i % 5) + (i / 5)
+                let order: Int = (i % 8) + (i / 8)
                 let startOffset: Double = 0.8 * (Double(order) / 23) * duration
                 var transformRotate3D = CATransform3DIdentity
                 transformRotate3D.m34 = 1.0 / -500.0
@@ -146,6 +153,65 @@ extension CALayer {
                 animGroup.duration = duration
                 rectLayer.add(animGroup, forKey: nil)
                 /* End Checker Flip Effect */
+            case .explosion:
+                /* Start Explosion Effect */
+                // partial rewrite/swift translation of the one from lock anim
+                let rectPath = UIBezierPath()
+                rectPath.move(to: rectLayer.position)
+
+                let r1 = CGFloat.random(in: 0.3...1.0)
+                let r2 = CGFloat.random(in: 0.4...1.0)
+                let r3 = r1 * r2
+                
+                let verticalDir = (r1 <= 0.5) ? 1 : -1
+                
+                var curvePoint = CGPoint.zero
+                var endPoint = CGPoint.zero
+                
+                let maxLRShift = 1.0 * randomFloat()
+                
+                let x = (self.bounds.width - ((rectLayer.position.x + rectLayer.bounds.width))) * CGFloat(r3)
+                let y = (self.bounds.height - ((rectLayer.position.y + rectLayer.bounds.height))) * randomFloat()
+                
+                let endY = self.bounds.height - self.frame.origin.y
+                
+                if rectLayer.position.x <= self.bounds.width * 0.5 {
+                    endPoint = CGPoint(x: -x, y: endY)
+                    curvePoint = CGPoint(x: (((rectLayer.position.x * 0.5) * CGFloat(r3)) * CGFloat(verticalDir)) * CGFloat(maxLRShift), y: -y)
+                } else {
+                    endPoint = CGPoint(x: x, y: endY)
+                    curvePoint = CGPoint(x: (((rectLayer.position.x * 0.5) * CGFloat(r3)) * CGFloat(verticalDir) + self.bounds.width) * CGFloat(maxLRShift), y: -y)
+                }
+                
+                rectPath.addQuadCurve(to: endPoint, controlPoint: curvePoint)
+
+                let moveAnim = CAKeyframeAnimation(keyPath: "position")
+                moveAnim.path = rectPath.cgPath
+                moveAnim.beginTime = 0.0
+                moveAnim.duration = duration
+                moveAnim.fillMode = .backwards
+                moveAnim.timingFunction = CAMediaTimingFunction(name: .easeOut)
+
+                let transformAnim = CAKeyframeAnimation(keyPath: "transform")
+                transformAnim.values = [rectLayer.transform, CATransform3DConcat(CATransform3DMakeScale(randomFloat(), randomFloat(), randomFloat()), CATransform3DMakeRotation(.pi * (1 + randomFloat()), randomFloat(), randomFloat(), randomFloat()))]
+                let times: [NSNumber] = [0.0, NSNumber(value: duration * 0.25)]
+                transformAnim.keyTimes = times
+                transformAnim.timingFunctions = [
+                    CAMediaTimingFunction(name: .easeOut),
+                    CAMediaTimingFunction(name: .easeIn),
+                    CAMediaTimingFunction(name: .easeInEaseOut),
+                    CAMediaTimingFunction(name: .easeInEaseOut)
+                ]
+                transformAnim.fillMode = .backwards
+
+                let animGroup = CAAnimationGroup()
+                animGroup.animations = [moveAnim, transformAnim]
+                animGroup.duration = duration
+                animGroup.setValue(rectLayer, forKey: "animationLayer")
+                rectLayer.add(animGroup, forKey: nil)
+
+                rectLayer.position = CGPoint(x: 0, y: -600)
+                /* End Explosion Effect */
             default:
                 print("No advanced rectangle animation for that!")
             }
@@ -453,6 +519,11 @@ extension CALayer {
         circlePath.addArc(withCenter: center, radius: radius, startAngle: CGFloat.pi, endAngle: -CGFloat.pi, clockwise: true)
         circlePath.close()
         return circlePath
+    }
+
+    // taken from lockanim
+    private func randomFloat() -> CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UInt32.max)
     }
 
     private func createGridRectangles(rows: Int, columns: Int, direction: GridSortDirection,

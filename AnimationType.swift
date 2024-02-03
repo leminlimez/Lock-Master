@@ -21,4 +21,5 @@ import Foundation
 
     case strips             // id: 14
     case checkerFlip        // id: 15
+    case explosion          // id: 16
 }
