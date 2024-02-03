@@ -62,37 +62,39 @@
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
 			<array>
-				<string>Shrink</string> <!-- 0 -->
-				<string>Expand</string> <!-- 1 -->
-				<string>Slide Left</string> <!-- 2 -->
-				<string>Slide Right</string> <!-- 3 -->
-				<string>Slide Up</string> <!-- 4 -->
-				<string>Slide Down</string> <!-- 5 -->
-				<string>CRT TV</string> <!-- 6 -->
-				<string>CRT TV (No Flash to White)</string> <!-- 13 -->
-				<string>Fade Into Off Button</string> <!-- 7 -->
-				<!--<string>Fade Out of Off Button</string>--> <!-- 8 -->
-				<string>Genie</string> <!-- 9 -->
-				<string>Flip</string> <!-- 10 -->
-				<string>Spin (Slower)</string> <!-- 11 -->
-				<string>Spin (Faster)</string> <!-- 12 -->
+				<string>CRT TV</string>							<!-- 6 -->
+				<string>CRT TV (No Flash to White)</string>		<!-- 13 -->
+				<string>Strips</string>							<!-- 14 -->
+				<string>Fade Into Off Button</string>			<!-- 7 -->
+				<!--<string>Fade Out of Off Button</string>-->	<!-- 8 -->
+				<string>Genie</string>							<!-- 9 -->
+				<string>Flip</string>							<!-- 10 -->
+				<string>Spin (Slower)</string>					<!-- 11 -->
+				<string>Spin (Faster)</string>					<!-- 12 -->
+				<string>Shrink</string>							<!-- 0 -->
+				<string>Expand</string>							<!-- 1 -->
+				<string>Slide Left</string>						<!-- 2 -->
+				<string>Slide Right</string>					<!-- 3 -->
+				<string>Slide Up</string>						<!-- 4 -->
+				<string>Slide Down</string>						<!-- 5 -->
 			</array>
 			<key>validValues</key>
 			<array>
-				<integer>0</integer> <!-- Shrink -->
-				<integer>1</integer> <!-- Expand -->
-				<integer>2</integer> <!-- Slide Left -->
-				<integer>3</integer> <!-- Slide Right -->
-				<integer>4</integer> <!-- Slide Up -->
-				<integer>5</integer> <!-- Slide Down -->
-				<integer>6</integer> <!-- CRT TV -->
-				<integer>13</integer> <!-- CRT TV (No Flash to White) -->
-				<integer>7</integer> <!-- Fade Into Off Button -->
-				<!--<integer>8</integer>-->  <!-- Fade Out of Off Button -->
-				<integer>9</integer> <!-- Genie -->
-				<integer>10</integer> <!-- Flip -->
-				<integer>11</integer> <!-- Spin (Slower) -->
-				<integer>12</integer> <!-- Spin (Faster) -->
+				<integer>6</integer>					<!-- CRT TV -->
+				<integer>13</integer>					<!-- CRT TV (No Flash to White) -->
+				<integer>14</integer>					<!-- Strips -->
+				<integer>7</integer>					<!-- Fade Into Off Button -->
+				<!--<integer>8</integer>-->				<!-- Fade Out of Off Button -->
+				<integer>9</integer>					<!-- Genie -->
+				<integer>10</integer>					<!-- Flip -->
+				<integer>11</integer>					<!-- Spin (Slower) -->
+				<integer>12</integer>					<!-- Spin (Faster) -->
+				<integer>0</integer>					<!-- Shrink -->
+				<integer>1</integer>					<!-- Expand -->
+				<integer>2</integer>					<!-- Slide Left -->
+				<integer>3</integer>					<!-- Slide Right -->
+				<integer>4</integer>					<!-- Slide Up -->
+				<integer>5</integer>					<!-- Slide Down -->
 			</array>
 			<key>default</key>
 			<integer>0</integer>

@@ -1,31 +1,135 @@
-// The MIT License
-//
-// Copyright (c) 2018 Dariusz Bukowski
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 import Foundation
 import UIKit
 import QuartzCore
 
+struct Rectangle {
+    let center: CGPoint
+    let width: CGFloat
+    let height: CGFloat
+
+    var boundingRect: CGRect {
+        return CGRect(
+            x: self.center.x - self.width * 0.5,
+            y: self.center.y - self.height * 0.5,
+            width: self.width, height: self.height
+        )
+    }
+
+    var path: CGPath {
+        let x: CGFloat = self.center.x - (self.width / 2.0)
+        let y: CGFloat = self.center.y - (self.height / 2.0)
+        
+        let rectPath = UIBezierPath()
+        rectPath.move(to: CGPoint(x: x, y: y))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.addLine(to: CGPoint(x: x + self.width, y: y))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.addLine(to: CGPoint(x: x + self.width, y: y + self.height))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.addLine(to: CGPoint(x: x, y: y + self.height))
+        rectPath.addLine(to: rectPath.currentPoint)
+        rectPath.close()
+        
+        return rectPath.cgPath
+    }
+}
+
 extension CALayer {
+    private enum GridSortDirection: Int {
+        case up
+        case down
+        case left
+        case right
+    }
+
     open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5, fadeExtension: Double = 0.2,
+        completion: (() -> ())? = nil) {
+        // TODO: Make a determining property for the animation type enum (Basic or Advanced)
+        if (animType == .strips) {
+            // Advanced Rectangle Animation
+            self.createGridRectangles(rows: 12, columns: 1, direction: .left) { rects in
+                DispatchQueue.main.async {
+                    self.animateAdvancedRectangleLock(withRectangles: rects, animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
+                }
+            }
+        } else {
+            // Basic Animation
+            self.animateBasicLock(animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
+        }
+    }
+
+
+    // MARK: Advanced Animations
+    private func animateAdvancedRectangleLock(withRectangles rects: [Rectangle],
+        animType: AnimationType = AnimationType.shrink, duration: Double = 0.5, fadeExtension: Double = 0.2,
+        completion: (() -> ())? = nil) {
+        guard let snapshot = self.snapshot() else {
+            return
+        }
+        let scale = UIScreen.main.scale
+        let initialSublayers = self.sublayers ?? []
+        var rectLayers = [CALayer]()
+
+        for (i, rect) in rects.enumerated() {
+            let bounds = rect.boundingRect
+            let rectImg = snapshot.cropping(to: bounds.applying(CGAffineTransform(scaleX: scale, y: scale)))
+
+            let rectLayer = CALayer()
+            rectLayer.frame = bounds
+            rectLayer.contents = rectImg
+            rectLayer.shouldRasterize = true
+            rectLayer.drawsAsynchronously = true
+            rectLayers.append(rectLayer)
+            self.addSublayer(rectLayer)
+
+            // animation-specific
+            switch (animType) {
+            case .strips:
+                /* Start Strips Effect */
+                var transformRotate3D = CATransform3DIdentity
+                transformRotate3D.m34 = 1.0 / -500.0
+                let rotationAngle = -90.0
+                transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle * .pi / 180.0, 1.0, 0.0, 0.0)
+                rectLayer.transform = transformRotate3D
+                
+                rectLayer.setValue(rotationAngle * .pi / 180.0, forKeyPath: "transform.rotation.x")
+                
+                // this needs to be in a group, otherwise those without begin time of 0.0 will just disappear
+                // animation groups are stupid
+                let animGroup = CAAnimationGroup()
+                animGroup.animations = [
+                    createFloatAnim(
+                        fromValue: 0.0, toValue: rotationAngle * .pi / 180.0,
+                        beginTime: 0.8 * (Double(i) / Double(rects.count)) * duration, duration: duration * 0.2,
+                        keyPath: "transform.rotation.x", easingType: .easeOut
+                    )
+                ]
+                animGroup.duration = duration
+                rectLayer.add(animGroup, forKey: nil)
+                /* End Strips Effect */
+            default:
+                print("No advanced rectangle animation for that!")
+            }
+        }
+
+        // finish the animation
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration + fadeExtension) {
+            rectLayers.forEach { $0.removeFromSuperlayer() }
+            completion?()
+        }
+
+        initialSublayers.forEach { (layer) in
+            layer.opacity = 0.0
+        }
+
+        self.contents = nil
+        self.backgroundColor = UIColor.clear.cgColor
+        self.masksToBounds = false
+    }
+
+
+    // MARK: Basic Animations
+    private func animateBasicLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5, fadeExtension: Double = 0.2,
         completion: (() -> ())? = nil) {
         guard let snapshot = self.snapshot() else {
             return
@@ -131,7 +235,7 @@ extension CALayer {
             maskLayer.frame = snapshotLayer.frame
             let screenCenter = CGPoint(x: snapshotLayer.bounds.size.width / 2.0, y: snapshotLayer.bounds.size.height / 2.0)
             let offBtnPos = CGPoint(x: screenCenter.x + snapshotLayer.bounds.size.width * 0.55, y: screenCenter.y - snapshotLayer.bounds.size.height * 0.175)
-            let rectPath = makeRectanglePath(center: screenCenter, width: snapshotLayer.bounds.size.width, height: snapshotLayer.bounds.size.height).cgPath
+            let rectPath = Rectangle(center: screenCenter, width: snapshotLayer.bounds.size.width, height: snapshotLayer.bounds.size.height).path
             let circlePath = makeCirclePath(center: screenCenter, radius: snapshotLayer.bounds.size.width).cgPath
             maskLayer.path = animType == .offBtnFadeInto ? circlePath : rectPath
             if animType == .offBtnFadeInto {
@@ -233,6 +337,8 @@ extension CALayer {
                 keyPath: "transform.rotation.y", easingType: animType == .flip ? .easeOut : .easeInEaseOut
             ), forKey: nil)
             /* End Flip/Spin Effect */
+        default:
+            print("No basic animation for that!")
         }
 
         // finish the animation
@@ -251,6 +357,8 @@ extension CALayer {
         self.masksToBounds = false
     }
 
+    
+    // MARK: Additional Functions
     private func snapshot() -> CGImage? {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0.0)
         defer { UIGraphicsEndImageContext() }
@@ -308,21 +416,39 @@ extension CALayer {
         return circlePath
     }
 
-    private func makeRectanglePath(center: CGPoint = CGPoint(x: 0.0, y: 0.0), width: CGFloat, height: CGFloat) -> UIBezierPath {
-        let x: CGFloat = center.x - (width / 2.0)
-        let y: CGFloat = center.y - (height / 2.0)
-        
-        let rectPath = UIBezierPath()
-        rectPath.move(to: CGPoint(x: x, y: y))
-        rectPath.addLine(to: rectPath.currentPoint)
-        rectPath.addLine(to: CGPoint(x: x + width, y: y))
-        rectPath.addLine(to: rectPath.currentPoint)
-        rectPath.addLine(to: CGPoint(x: x + width, y: y + height))
-        rectPath.addLine(to: rectPath.currentPoint)
-        rectPath.addLine(to: CGPoint(x: x, y: y + height))
-        rectPath.addLine(to: rectPath.currentPoint)
-        rectPath.close()
-        
-        return rectPath
+    private func createGridRectangles(rows: Int, columns: Int, direction: GridSortDirection,
+        completion: @escaping([Rectangle]) -> ()) {
+        DispatchQueue.global(qos: .background).async {
+            let bounds = UIScreen.main.bounds
+            let width: CGFloat = (bounds.width / CGFloat(rows))
+            let height: CGFloat = (bounds.height / CGFloat(columns))
+
+            // create the rects
+            var rects: [Rectangle] = []
+            for row in 0..<rows {
+                for col in 0..<columns {
+                    rects.append(Rectangle(
+                        center: CGPoint(x: (width * CGFloat(row)) + (width * 0.5), y: (height * CGFloat(col)) + (height * 0.5)),
+                        width: width, height: height
+                    ))
+                }
+            }
+
+            // sort the rects
+            let sortedRects = rects.sorted(by: { (rect1, rect2) -> Bool in
+                switch (direction) {
+                case .up:
+                    return rect1.center.y < rect2.center.y
+                case .down:
+                    return rect1.center.y > rect2.center.y
+                case .left:
+                    return rect1.center.x < rect2.center.x
+                case .right:
+                    return rect1.center.x > rect2.center.x
+                }
+            })
+
+            completion(sortedRects)
+        }
     }
 }
