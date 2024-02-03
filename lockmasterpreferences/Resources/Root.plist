@@ -65,6 +65,7 @@
 				<string>CRT TV</string>							<!-- 6 -->
 				<string>CRT TV (No Flash to White)</string>		<!-- 13 -->
 				<string>Strips</string>							<!-- 14 -->
+				<string>Checker Flip</string>					<!-- 15 -->
 				<string>Fade Into Off Button</string>			<!-- 7 -->
 				<!--<string>Fade Out of Off Button</string>-->	<!-- 8 -->
 				<string>Genie</string>							<!-- 9 -->
@@ -83,6 +84,7 @@
 				<integer>6</integer>					<!-- CRT TV -->
 				<integer>13</integer>					<!-- CRT TV (No Flash to White) -->
 				<integer>14</integer>					<!-- Strips -->
+				<integer>15</integer>					<!-- Checker Flip -->
 				<integer>7</integer>					<!-- Fade Into Off Button -->
 				<!--<integer>8</integer>-->				<!-- Fade Out of Off Button -->
 				<integer>9</integer>					<!-- Genie -->

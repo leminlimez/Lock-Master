@@ -20,4 +20,5 @@ import Foundation
     case tvNoFadeToWhite    // id: 13
 
     case strips             // id: 14
+    case checkerFlip        // id: 15
 }

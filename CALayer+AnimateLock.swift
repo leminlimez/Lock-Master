@@ -40,6 +40,9 @@ extension CALayer {
         case down
         case left
         case right
+        case downLeft
+        case downRight
+        case none
     }
 
     open func animateLock(animType: AnimationType = AnimationType.shrink, duration: Double = 0.5, fadeExtension: Double = 0.2,
@@ -48,6 +51,13 @@ extension CALayer {
         if (animType == .strips) {
             // Advanced Rectangle Animation
             self.createGridRectangles(rows: 12, columns: 1, direction: .left) { rects in
+                DispatchQueue.main.async {
+                    self.animateAdvancedRectangleLock(withRectangles: rects, animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
+                }
+            }
+        } else if (animType == .checkerFlip) {
+            // Advanced Rectangle Animation
+            self.createGridRectangles(rows: 8, columns: 16, direction: .none) { rects in
                 DispatchQueue.main.async {
                     self.animateAdvancedRectangleLock(withRectangles: rects, animType: animType, duration: duration, fadeExtension: fadeExtension, completion: completion)
                 }
@@ -88,18 +98,18 @@ extension CALayer {
                 /* Start Strips Effect */
                 var transformRotate3D = CATransform3DIdentity
                 transformRotate3D.m34 = 1.0 / -500.0
-                let rotationAngle = -90.0
-                transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle * .pi / 180.0, 1.0, 0.0, 0.0)
+                let rotationAngle = -90.0 * .pi / 180.0
+                transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle, 1.0, 0.0, 0.0)
                 rectLayer.transform = transformRotate3D
                 
-                rectLayer.setValue(rotationAngle * .pi / 180.0, forKeyPath: "transform.rotation.x")
+                rectLayer.setValue(rotationAngle, forKeyPath: "transform.rotation.x")
                 
                 // this needs to be in a group, otherwise those without begin time of 0.0 will just disappear
                 // animation groups are stupid
                 let animGroup = CAAnimationGroup()
                 animGroup.animations = [
                     createFloatAnim(
-                        fromValue: 0.0, toValue: rotationAngle * .pi / 180.0,
+                        fromValue: 0.0, toValue: rotationAngle,
                         beginTime: 0.8 * (Double(i) / Double(rects.count)) * duration, duration: duration * 0.2,
                         keyPath: "transform.rotation.x", easingType: .easeOut
                     )
@@ -107,6 +117,35 @@ extension CALayer {
                 animGroup.duration = duration
                 rectLayer.add(animGroup, forKey: nil)
                 /* End Strips Effect */
+            case .checkerFlip:
+                /* Start Checker Flip Effect */
+                let order: Int = (i % 8) + (i / 8)//(i % 5) + (i / 5)
+                let startOffset: Double = 0.8 * (Double(order) / 23) * duration
+                var transformRotate3D = CATransform3DIdentity
+                transformRotate3D.m34 = 1.0 / -500.0
+                let rotationAngle = 90.0 * .pi / 180.0
+                transformRotate3D = CATransform3DRotate(transformRotate3D, rotationAngle, 1.0, 1.0, 0.0)
+                rectLayer.transform = transformRotate3D
+                
+                rectLayer.setValue(rotationAngle, forKeyPath: "transform.rotation.x")
+                rectLayer.setValue(rotationAngle, forKeyPath: "transform.rotation.y")
+                
+                let animGroup = CAAnimationGroup()
+                animGroup.animations = [
+                    createFloatAnim(
+                        fromValue: 0.0, toValue: rotationAngle,
+                        beginTime: startOffset, duration: duration * 0.2,
+                        keyPath: "transform.rotation.x", easingType: .easeOut
+                    ),
+                    createFloatAnim(
+                        fromValue: 0.0, toValue: rotationAngle,
+                        beginTime: startOffset, duration: duration * 0.2,
+                        keyPath: "transform.rotation.y", easingType: .easeOut
+                    )
+                ]
+                animGroup.duration = duration
+                rectLayer.add(animGroup, forKey: nil)
+                /* End Checker Flip Effect */
             default:
                 print("No advanced rectangle animation for that!")
             }
@@ -419,14 +458,13 @@ extension CALayer {
     private func createGridRectangles(rows: Int, columns: Int, direction: GridSortDirection,
         completion: @escaping([Rectangle]) -> ()) {
         DispatchQueue.global(qos: .background).async {
-            let bounds = UIScreen.main.bounds
-            let width: CGFloat = (bounds.width / CGFloat(rows))
-            let height: CGFloat = (bounds.height / CGFloat(columns))
+            let width: CGFloat = (self.bounds.width / CGFloat(rows))
+            let height: CGFloat = (self.bounds.height / CGFloat(columns))
 
             // create the rects
             var rects: [Rectangle] = []
-            for row in 0..<rows {
-                for col in 0..<columns {
+            for col in 0..<columns {
+                for row in 0..<rows {
                     rects.append(Rectangle(
                         center: CGPoint(x: (width * CGFloat(row)) + (width * 0.5), y: (height * CGFloat(col)) + (height * 0.5)),
                         width: width, height: height
@@ -435,20 +473,30 @@ extension CALayer {
             }
 
             // sort the rects
-            let sortedRects = rects.sorted(by: { (rect1, rect2) -> Bool in
-                switch (direction) {
-                case .up:
-                    return rect1.center.y < rect2.center.y
-                case .down:
-                    return rect1.center.y > rect2.center.y
-                case .left:
-                    return rect1.center.x < rect2.center.x
-                case .right:
-                    return rect1.center.x > rect2.center.x
-                }
-            })
+            if direction == .none {
+                completion(rects)
+            } else {
+                let sortedRects = rects.sorted(by: { (rect1, rect2) -> Bool in
+                    switch (direction) {
+                    case .up:
+                        return rect1.center.y < rect2.center.y
+                    case .down:
+                        return rect1.center.y > rect2.center.y
+                    case .left:
+                        return rect1.center.x < rect2.center.x
+                    case .right:
+                        return rect1.center.x > rect2.center.x
+                    case .downLeft:
+                        return (floor(rect1.center.y) == floor(rect2.center.y) ? rect1.center.x < rect2.center.x : rect1.center.y < rect2.center.y)
+                    case .downRight:
+                        return (floor(rect1.center.y) == floor(rect2.center.y) ? rect1.center.x > rect2.center.x : rect1.center.y < rect2.center.y)
+                    case .none:
+                        return true
+                    }
+                })
 
-            completion(sortedRects)
+                completion(sortedRects)
+            }
         }
     }
 }
