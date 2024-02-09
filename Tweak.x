@@ -217,7 +217,7 @@ static LockMaster *__strong lockMaster;
 	%orig(arg1, arg2, arg3, arg4, arg5);
 }*/
 
-/*-(void)setBacklightState:(long long)arg1 source:(long long)arg2 animated:(BOOL)arg3 completion:(/*^block*//*id)arg4
+-(void)setBacklightState:(long long)arg1 source:(long long)arg2 animated:(BOOL)arg3 completion:(/*^block*/id)arg4
 {
 	if(
 		enabled
@@ -225,21 +225,11 @@ static LockMaster *__strong lockMaster;
 		&& (arg3 && [self screenIsOn])
 		&& !isAnimationInProgress
 	) {
+		// this calls, but nothing happens
+		// might be an issue with how the lockmaster class works
 		[lockMaster playLockAnimation:animDuration extendFadeBy:fadeExtension];
 	}
 	%orig;
-}*/
--(void)_performBacklightChangeRequest:(id)arg1 completion:(/*^block*/id)arg2
-{
-	if(
-		enabled
-		&& (!disableInLPM || (![[NSProcessInfo processInfo] isLowPowerModeEnabled]))
-		&& ([self screenIsOn])
-		&& !isAnimationInProgress
-	) {
-		[lockMaster playLockAnimation:animDuration extendFadeBy:fadeExtension];
-	}
-	%orig(arg1, arg2);
 }
 
 -(void)turnOnScreenFullyWithBacklightSource:(long long)arg1 {
