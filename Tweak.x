@@ -198,7 +198,7 @@ static LockMaster *__strong lockMaster;
 
 #pragma mark - Lock Animation Hooks
 %hook SBBacklightController
--(void)_animateBacklightToFactor:(float)arg1 duration:(double)arg2 source:(long long)arg3 silently:(BOOL)arg4 completion:(id)arg5 
+/*-(void)_animateBacklightToFactor:(float)arg1 duration:(double)arg2 source:(long long)arg3 silently:(BOOL)arg4 completion:(id)arg5 
 {
 	// source
 	// 3 = manual lock
@@ -215,6 +215,31 @@ static LockMaster *__strong lockMaster;
 		[lockMaster playLockAnimation:(arg2 - fadeExtension) extendFadeBy:fadeExtension];
 	}
 	%orig(arg1, arg2, arg3, arg4, arg5);
+}*/
+
+/*-(void)setBacklightState:(long long)arg1 source:(long long)arg2 animated:(BOOL)arg3 completion:(/*^block*//*id)arg4
+{
+	if(
+		enabled
+		&& (!disableInLPM || (![[NSProcessInfo processInfo] isLowPowerModeEnabled]))
+		&& (arg3 && [self screenIsOn])
+		&& !isAnimationInProgress
+	) {
+		[lockMaster playLockAnimation:animDuration extendFadeBy:fadeExtension];
+	}
+	%orig;
+}*/
+-(void)_performBacklightChangeRequest:(id)arg1 completion:(/*^block*/id)arg2
+{
+	if(
+		enabled
+		&& (!disableInLPM || (![[NSProcessInfo processInfo] isLowPowerModeEnabled]))
+		&& ([self screenIsOn])
+		&& !isAnimationInProgress
+	) {
+		[lockMaster playLockAnimation:animDuration extendFadeBy:fadeExtension];
+	}
+	%orig(arg1, arg2);
 }
 
 -(void)turnOnScreenFullyWithBacklightSource:(long long)arg1 {
