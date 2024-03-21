@@ -6,4 +6,4 @@ Description: Customize the way your device locks
 Maintainer: lemin
 Author: lemin
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader (= 2.2.6), ws.hbang.common (>= 2.0)
+Depends: mobilesubstrate (>= 0.9.5000), ws.hbang.common (>= 2.0)
