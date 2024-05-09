@@ -1,9 +1,10 @@
 # Lock Master
 Customize the iOS Locking Experience!
 
-**Note: This will NOT work on "semi-jailbreaks" such as Seratonin.** It needs the backboardd to be resigned. Please do not create github issues asking me to add support for them, your issue will be deleted.
+**Note: This will NOT work on "semi-jailbreaks" such as Serotonin,** as backboardd needs to be resigned for this tweak to work. Please do not create an issue asking me to add support for them, your issue will be deleted.
 
-Supports iOS 14.0+
+Supports iOS 14.0-15.x  
+iOS 16+ won't be supported  
 iPads are currently not supported, sorry for the inconvenience.
 
 ## Features
